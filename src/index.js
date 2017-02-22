@@ -39,7 +39,8 @@ module.exports = function gulpHeaderComment(options = {}) {
 
     read(options)
       .then((content) => {
-        const template = _.template(content, {_, moment})();
+        const templateFn = _.template(content);
+        const template = templateFn({_, moment});
         const extension = path.extname(file.path);
         const header = commenting(template.trim(), {extension}) + separator;
 

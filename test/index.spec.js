@@ -26,6 +26,7 @@ const fs = require('fs');
 const path = require('path');
 const Vinyl = require('vinyl');
 const Stream = require('stream');
+const moment = require('moment');
 const gulpHeaderComment = require('../src/index');
 const EOL = '\n';
 
@@ -283,6 +284,37 @@ describe('gulp-header-comment', () => {
 
     stream.on('data', (newFile) => {
       expect(fs.readFile).toHaveBeenCalledWith(jasmine.any(String), {encoding}, jasmine.any(Function));
+    });
+
+    stream.once('error', (err) => {
+      done.fail(err);
+    });
+
+    stream.once('end', () => {
+      done();
+    });
+
+    stream.write(vinyl);
+    stream.end();
+  });
+
+  it('should prepend header with interpolated template', (done) => {
+    const filePath = path.join(base, 'test.js');
+    const code = fs.readFileSync(filePath, 'utf-8');
+    expect(code).not.toEqual('');
+
+    const contents = new Buffer(code);
+    const vinyl = new Vinyl({cwd, base, contents, path: filePath});
+    const header = `Generated on <%= moment().format('YYYY') %>`;
+    const expectedHeader =
+      '/**' + EOL +
+      ' * Generated on ' + moment().format('YYYY') + EOL +
+      ' */';
+
+    const stream = gulpHeaderComment(header);
+
+    stream.on('data', (newFile) => {
+      expect(newFile.contents).toEqual(new Buffer(expectedHeader + EOL + EOL + code));
     });
 
     stream.once('error', (err) => {
