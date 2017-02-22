@@ -24,29 +24,32 @@
 
 const path = require('path');
 const _ = require('lodash');
+const moment = require('moment');
 const commenting = require('commenting');
 const through = require('through2');
 const read = require('./read');
 
 module.exports = function gulpHeaderComment(options = {}) {
-  return through((file, encoding, cb) => {
+  const separator = _.isObject(options) && _.isString(options.separator) ? options.separator : '\n';
+
+  return through.obj((file, encoding, cb) => {
     if (file.isNull() || file.isDirectory()) {
       return cb(null, file);
     }
 
     read(options)
       .then((content) => {
-        const template = _.template(content, {_, moment});
-        const extension = path.extname(file.basename);
-        const header = commenting(template.trim(), {extension});
+        const template = _.template(content, {_, moment})();
+        const extension = path.extname(file.path);
+        const header = commenting(template.trim(), {extension}) + separator;
 
         if (file.isBuffer()) {
           // Just prepend content.
-          file.contents = new Buffer(header + '\n' + file.contents);
+          file.contents = new Buffer(header + file.contents);
         } else if (file.isStream()) {
           // Pipe to a new stream.
           const stream = through();
-          stream.write(template);
+          stream.write(new Buffer(header));
           file.contents = file.contents.pipe(stream);
         }
 

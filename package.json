@@ -23,6 +23,8 @@
     "eslint": "3.16.0",
     "eslint-config-google": "0.7.1",
     "gulp-eslint": "3.0.1",
-    "jasmine-core": "2.5.2"
+    "gulp-jasmine": "2.4.2",
+    "jasmine-core": "2.5.2",
+    "vinyl": "2.0.1"
   }
 }
