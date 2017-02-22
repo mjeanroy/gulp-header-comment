@@ -70,7 +70,7 @@ describe('gulp-header-comment', () => {
   it('should prepend header with buffer content', (done) => {
     const filePath = path.join(base, 'test.js');
     const code = fs.readFileSync(filePath, 'utf-8');
-    expect(code).not.toEqual('');
+    expect(code).toBeTruthy();
 
     const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
@@ -108,7 +108,7 @@ describe('gulp-header-comment', () => {
   it('should prepend header with stream content', (done) => {
     const filePath = path.join(base, 'test.js');
     const code = fs.readFileSync(filePath, 'utf-8');
-    expect(code).not.toEqual('');
+    expect(code).toBeTruthy();
 
     const contents = new Stream.Readable();
     contents.push(code);
@@ -155,8 +155,9 @@ describe('gulp-header-comment', () => {
   it('should prepend header with CSS content', (done) => {
     const filePath = path.join(base, 'test.css');
     const code = fs.readFileSync(filePath);
-    const contents = new Buffer(code);
+    expect(code).toBeTruthy();
 
+    const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
     const expectedHeader =
@@ -192,8 +193,9 @@ describe('gulp-header-comment', () => {
   it('should prepend header from a simple string', (done) => {
     const filePath = path.join(base, 'test.js');
     const code = fs.readFileSync(filePath);
-    const contents = new Buffer(code);
+    expect(code).toBeTruthy();
 
+    const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const header = 'Hello World';
     const expectedHeader =
@@ -227,7 +229,7 @@ describe('gulp-header-comment', () => {
   it('should prepend header with custom separator', (done) => {
     const filePath = path.join(base, 'test.js');
     const code = fs.readFileSync(filePath, 'utf-8');
-    expect(code).not.toEqual('');
+    expect(code).toBeTruthy();
 
     const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
@@ -268,7 +270,7 @@ describe('gulp-header-comment', () => {
   it('should prepend header with custom encoding', (done) => {
     const filePath = path.join(base, 'test.js');
     const code = fs.readFileSync(filePath, 'utf-8');
-    expect(code).not.toEqual('');
+    expect(code).toBeTruthy();
 
     const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
@@ -301,7 +303,7 @@ describe('gulp-header-comment', () => {
   it('should prepend header with interpolated template', (done) => {
     const filePath = path.join(base, 'test.js');
     const code = fs.readFileSync(filePath, 'utf-8');
-    expect(code).not.toEqual('');
+    expect(code).toBeTruthy();
 
     const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
