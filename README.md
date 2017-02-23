@@ -1,5 +1,8 @@
 # gulp-header-comment
 
+[![Build Status](https://travis-ci.org/mjeanroy/gulp-header-comment.svg?branch=master)](https://travis-ci.org/mjeanroy/gulp-header-comment)
+[![Npm version](https://badge.fury.io/js/gulp-header-comment.svg)](https://badge.fury.io/js/gulp-header-comment)
+
 gulp-header-comment is a [Gulp](https://github.com/gulpjs/gulp) extension to add comments to file(s) in the pipeline.
 
 ## Install
