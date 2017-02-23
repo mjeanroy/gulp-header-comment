@@ -361,4 +361,28 @@ describe('gulp-header-comment', () => {
     stream.write(vinyl);
     stream.end();
   });
+
+  it('should fail if template file does not exist', (done) => {
+    const filePath = path.join(base, 'test.js');
+    const code = fs.readFileSync(filePath, 'utf-8');
+    expect(code).toBeTruthy();
+
+    const contents = new Buffer(code);
+    const vinyl = new Vinyl({cwd, base, contents, path: filePath});
+    const stream = gulpHeaderComment({
+      file: 'fake-file-that-does-not-exist',
+    });
+
+    stream.once('error', (err) => {
+      expect(err).toBeDefined();
+      done();
+    });
+
+    stream.once('end', () => {
+      done.fail('Error should have been triggered');
+    });
+
+    stream.write(vinyl);
+    stream.end();
+  });
 });
