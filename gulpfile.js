@@ -26,6 +26,7 @@ const path = require('path');
 const gulp = require('gulp');
 const eslint = require('gulp-eslint');
 const jasmine = require('gulp-jasmine');
+const babel = require('gulp-babel');
 
 gulp.task('lint', () => {
   gulp.task('lint', () => {
@@ -42,7 +43,18 @@ gulp.task('lint', () => {
   });
 });
 
-gulp.task('test', () => {
+gulp.task('build', () => {
+  const dist = path.join(__dirname, 'dist');
+  const sources = [
+    path.join(__dirname, 'src', '**', '*.js'),
+  ];
+
+  return gulp.src(sources)
+    .pipe(babel())
+    .pipe(gulp.dest(dist));
+});
+
+gulp.task('test', ['build'], () => {
   const testFiles = path.join(__dirname, 'test', '**', '*spec.js');
   return gulp.src(testFiles).pipe(jasmine());
 });

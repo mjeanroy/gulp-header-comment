@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 const moment = require('moment');
@@ -31,6 +32,8 @@ const read = require('./read');
 
 module.exports = function gulpHeaderComment(options = {}) {
   const separator = _.isObject(options) && _.isString(options.separator) ? options.separator : '\n';
+  const pkgPath = path.join(process.cwd(), 'package.json');
+  const pkg = fs.existsSync(pkgPath) ? require(pkgPath) : {};
 
   return through.obj((file, encoding, cb) => {
     if (file.isNull() || file.isDirectory()) {
@@ -40,7 +43,7 @@ module.exports = function gulpHeaderComment(options = {}) {
     read(options)
       .then((content) => {
         const templateFn = _.template(content);
-        const template = templateFn({_, moment});
+        const template = templateFn({_, moment, pkg});
         const extension = path.extname(file.path);
         const header = commenting(template.trim(), {extension}) + separator;
 
