@@ -27,6 +27,7 @@ const path = require('path');
 const Vinyl = require('vinyl');
 const Stream = require('stream');
 const moment = require('moment');
+const gutil = require('gulp-util');
 const gulpHeaderComment = require('../dist/index');
 const EOL = '\n';
 
@@ -373,7 +374,10 @@ describe('gulp-header-comment', () => {
       file: 'fake-file-that-does-not-exist',
     });
 
+    spyOn(gutil, 'log');
+
     stream.once('error', (err) => {
+      expect(gutil.log).toHaveBeenCalled();
       expect(err).toBeDefined();
       done();
     });

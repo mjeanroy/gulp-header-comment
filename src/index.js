@@ -28,6 +28,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const commenting = require('commenting');
 const through = require('through2');
+const gutil = require('gulp-util');
 const read = require('./read');
 
 module.exports = function gulpHeaderComment(options = {}) {
@@ -60,7 +61,11 @@ module.exports = function gulpHeaderComment(options = {}) {
         cb(null, file);
       })
       .catch((err) => {
-        cb(err);
+        // Log error.
+        gutil.log(gutil.colors.red(`gulp-header-comment: ${err}`));
+
+        // Wrap error.
+        cb(new gutil.PluginError('gulp-header-comment', err));
       });
   });
 };
