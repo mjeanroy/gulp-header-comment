@@ -6,6 +6,8 @@ test/
 src/
 .eslintrc
 .babelrc
+.nvmrc
+.travis.yml
 gulpfile.js
 
 # Logs
