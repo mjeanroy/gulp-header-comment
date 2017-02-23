@@ -15,6 +15,12 @@
   ],
   "author": "Mickael Jeanroy",
   "license": "MIT",
+  "bugs": "https://github.com/mjeanroy/gulp-header-comment/issues",
+  "homepage": "https://github.com/mjeanroy/gulp-header-comment",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mjeanroy/gulp-header-comment.git"
+  },
   "dependencies": {
     "commenting": "1.0.3",
     "gulp-util": "3.0.8",
