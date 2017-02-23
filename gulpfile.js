@@ -27,7 +27,10 @@ const gulp = require('gulp');
 const eslint = require('gulp-eslint');
 const jasmine = require('gulp-jasmine');
 const babel = require('gulp-babel');
+const git = require('gulp-git');
+const bump = require('gulp-bump');
 const del = require('del');
+const runSequence = require('run-sequence');
 
 gulp.task('clean', () => {
   return del([
@@ -64,4 +67,37 @@ gulp.task('build', ['lint', 'clean'], () => {
 gulp.task('test', ['build'], () => {
   const testFiles = path.join(__dirname, 'test', '**', '*spec.js');
   return gulp.src(testFiles).pipe(jasmine());
+});
+
+gulp.task('commit:pre', () => {
+  const dist = path.join(__dirname, 'dist');
+  const packageJson = path.join(__dirname, 'package.json');
+  return gulp.src([packageJson, dist])
+    .pipe(git.add({args: '-f'}))
+    .pipe(git.commit('release: release version'));
+});
+
+gulp.task('commit:post', () => {
+  const dist = path.join(__dirname, 'dist');
+  return gulp.src(dist)
+    .pipe(git.rm({args: '-r'}))
+    .pipe(git.commit('release: prepare next release'));
+});
+
+gulp.task('tag', (done) => {
+  const pkg = require('./package.json');
+  git.tag(`v${version}`, `release: tag version ${pkg.version}`, done);
+});
+
+['major', 'minor', 'patch'].forEach((level) => {
+  gulp.task(`bump:${level}`, () => {
+    return gulp.src(path.join(__dirname, 'package.json'))
+      .pipe(bump({type: level})
+      .on('error', gutil.log))
+      .pipe(gulp.dest(__dirname));
+  });
+
+  gulp.task(`release:${level}`, ['build'], () => {
+    runSequence(`bump:${level}`, 'commit:pre', 'tag', 'commit:post');
+  });
 });

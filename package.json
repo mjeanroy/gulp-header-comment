@@ -7,7 +7,11 @@
     "clean": "gulp clean",
     "lint": "gulp lint",
     "build": "gulp build",
-    "test": "gulp test"
+    "test": "gulp test",
+    "release": "gulp release:minor",
+    "release:patch": "gulp release:patch",
+    "release:minor": "gulp release:minor",
+    "release:major": "gulp release:major"
   },
   "keywords": [
     "gulpplugin",
@@ -37,9 +41,12 @@
     "eslint-config-google": "0.7.1",
     "gulp": "3.9.1",
     "gulp-babel": "6.1.2",
+    "gulp-bump": "2.7.0",
     "gulp-eslint": "3.0.1",
+    "gulp-git": "2.0.0",
     "gulp-jasmine": "2.4.2",
     "jasmine-core": "2.5.2",
+    "run-sequence": "1.2.2",
     "vinyl": "2.0.1"
   }
 }
