@@ -1,8 +1,9 @@
 # Build files
 dist/
 
-# Node modules
+# Node / NPM
 node_modules/
+npm-debug.log
 
 # Logs
 *.log

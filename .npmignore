@@ -1,0 +1,12 @@
+# NPM modules
+node_modules/
+
+# Dev files.
+test/
+src/
+.eslintrc
+.babelrc
+gulpfile.js
+
+# Logs
+*.log
