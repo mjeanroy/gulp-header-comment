@@ -29,6 +29,7 @@ const jasmine = require('gulp-jasmine');
 const babel = require('gulp-babel');
 const git = require('gulp-git');
 const bump = require('gulp-bump');
+const gutil = require('gulp-util');
 const del = require('del');
 const runSequence = require('run-sequence');
 
@@ -86,7 +87,8 @@ gulp.task('commit:post', () => {
 
 gulp.task('tag', (done) => {
   const pkg = require('./package.json');
-  git.tag(`v${version}`, `release: tag version ${pkg.version}`, done);
+  const version = pkg.version;
+  git.tag(`v${version}`, `release: tag version ${version}`, done);
 });
 
 ['major', 'minor', 'patch'].forEach((level) => {
