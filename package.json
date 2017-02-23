@@ -10,6 +10,7 @@
     "test": "gulp test"
   },
   "keywords": [
+    "gulpplugin",
     "gulp"
   ],
   "author": "Mickael Jeanroy",
