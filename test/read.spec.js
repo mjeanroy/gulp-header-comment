@@ -22,6 +22,8 @@
  * THE SOFTWARE.
  */
 
+'use strict';
+
 const path = require('path');
 const fs = require('fs');
 const read = require('../dist/read');
