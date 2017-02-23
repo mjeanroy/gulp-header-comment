@@ -50,7 +50,7 @@ gulp.task('lint', () => {
   });
 });
 
-gulp.task('build', ['clean'], () => {
+gulp.task('build', ['lint', 'clean'], () => {
   const dist = path.join(__dirname, 'dist');
   const sources = [
     path.join(__dirname, 'src', '**', '*.js'),
