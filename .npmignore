@@ -2,13 +2,13 @@
 node_modules/
 
 # Dev files.
-test/
-src/
-.eslintrc
-.babelrc
-.nvmrc
-.travis.yml
-gulpfile.js
+/test
+/src
+/.eslintrc
+/.babelrc
+/.nvmrc
+/.travis.yml
+/gulpfile.js
 
 # Logs
 *.log
