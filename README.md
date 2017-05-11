@@ -54,6 +54,13 @@ gulp.src('**/*.js')
   .pipe(gulp.dest('./dist/'))
 ```
 
+## ChangeLogs
+
+- 0.2.0
+  - Dependency update (`moment`).
+  - Dependency update (`q`).
+- 0.1.0 : First release
+
 ## License
 
 MIT License (MIT)
