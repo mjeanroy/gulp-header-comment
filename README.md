@@ -23,7 +23,10 @@ gulp.src('**/*.js')
 The generated comment will use:
 - Block comment for JS, LESS, CSS and SASS files (i.e starts with `/**` and ends with `*/`).
 - HTML comments for HTML files (i.e starts with `<!--` and ends with `-->`).
-- Hash comments for other files (i.e starts with `#`).
+- Hash comments for `appcache` and hidden files (i.e starts with `#`).
+- The default is the block comment otherwise.
+
+See [https://github.com/3rd-Eden/commenting](commenting), as this package is used to generate comments according to file extensions.
 
 ## Templating
 
@@ -56,6 +59,8 @@ gulp.src('**/*.js')
 
 ## ChangeLogs
 
+- 0.2.1
+  - Fix comment style for `.appcache` files.
 - 0.2.0
   - Dependency update (`moment`).
   - Dependency update (`q`).

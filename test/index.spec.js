@@ -93,7 +93,7 @@ describe('gulp-header-comment', () => {
       expect(newFile.base).toEqual(base);
       expect(newFile.path).toEqual(filePath);
       expect(newFile.contents).not.toBeNull();
-      expect(newFile.contents).toEqual(new Buffer(expectedHeader + EOL + EOL + code));
+      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
     });
 
     stream.once('error', (err) => {
@@ -178,7 +178,7 @@ describe('gulp-header-comment', () => {
       expect(newFile.base).toEqual(base);
       expect(newFile.path).toEqual(filePath);
       expect(newFile.contents).not.toBeNull();
-      expect(newFile.contents).toEqual(new Buffer(expectedHeader + EOL + EOL + code));
+      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
     });
 
     stream.once('error', (err) => {
@@ -214,7 +214,7 @@ describe('gulp-header-comment', () => {
       expect(newFile.base).toEqual(base);
       expect(newFile.path).toEqual(filePath);
       expect(newFile.contents).not.toBeNull();
-      expect(newFile.contents).toEqual(new Buffer(expectedHeader + EOL + EOL + code));
+      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
     });
 
     stream.once('error', (err) => {
@@ -255,7 +255,7 @@ describe('gulp-header-comment', () => {
       expect(newFile.base).toEqual(base);
       expect(newFile.path).toEqual(filePath);
       expect(newFile.contents).not.toBeNull();
-      expect(newFile.contents).toEqual(new Buffer(expectedHeader + EOL + separator + code));
+      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + separator + code);
     });
 
     stream.once('error', (err) => {
@@ -319,7 +319,7 @@ describe('gulp-header-comment', () => {
     const stream = gulpHeaderComment(header);
 
     stream.on('data', (newFile) => {
-      expect(newFile.contents).toEqual(new Buffer(expectedHeader + EOL + EOL + code));
+      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
     });
 
     stream.once('error', (err) => {
@@ -350,7 +350,7 @@ describe('gulp-header-comment', () => {
     const stream = gulpHeaderComment(header);
 
     stream.on('data', (newFile) => {
-      expect(newFile.contents).toEqual(new Buffer(expectedHeader + EOL + EOL + code));
+      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
     });
 
     stream.once('error', (err) => {
@@ -386,6 +386,84 @@ describe('gulp-header-comment', () => {
 
     stream.once('end', () => {
       done.fail('Error should have been triggered');
+    });
+
+    stream.write(vinyl);
+    stream.end();
+  });
+
+  it('should prepend header with configuration file such as .appacache', (done) => {
+    const filePath = path.join(base, '.appcache');
+    const code = fs.readFileSync(filePath);
+    expect(code).toBeTruthy();
+
+    const contents = new Buffer(code);
+    const vinyl = new Vinyl({cwd, base, contents, path: filePath});
+    const headerFile = path.join(base, 'test.txt');
+
+    const expectedHeader =
+      '#' + EOL +
+      '# Hello World' + EOL +
+      '#';
+
+    const stream = gulpHeaderComment({
+      file: headerFile,
+    });
+
+    stream.on('data', (newFile) => {
+      expect(newFile).toBeDefined();
+      expect(newFile.cwd).toEqual(cwd);
+      expect(newFile.base).toEqual(base);
+      expect(newFile.path).toEqual(filePath);
+      expect(newFile.contents).not.toBeNull();
+      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
+    });
+
+    stream.once('error', (err) => {
+      done.fail(err);
+    });
+
+    stream.once('end', () => {
+      done();
+    });
+
+    stream.write(vinyl);
+    stream.end();
+  });
+
+  it('should prepend header with an unknown extension', (done) => {
+    const filePath = path.join(base, 'test.appcache');
+    const code = fs.readFileSync(filePath);
+    expect(code).toBeTruthy();
+
+    const contents = new Buffer(code);
+    const vinyl = new Vinyl({cwd, base, contents, path: filePath});
+    const headerFile = path.join(base, 'test.txt');
+
+    const expectedHeader =
+      '#' + EOL +
+      '# Hello World' + EOL +
+      '#';
+
+    const stream = gulpHeaderComment({
+      file: headerFile,
+    });
+
+    stream.on('data', (newFile) => {
+      expect(newFile).toBeDefined();
+      expect(newFile.cwd).toEqual(cwd);
+      expect(newFile.base).toEqual(base);
+      expect(newFile.path).toEqual(filePath);
+      expect(newFile.contents).not.toBeNull();
+      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
+    });
+
+    stream.once('error', (err) => {
+      done.fail(err);
+    });
+
+    stream.once('end', () => {
+      done();
     });
 
     stream.write(vinyl);
