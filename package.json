@@ -26,7 +26,7 @@
     "url": "git://github.com/mjeanroy/gulp-header-comment.git"
   },
   "dependencies": {
-    "commenting": "1.0.3",
+    "commenting": "1.0.4",
     "gulp-util": "3.0.8",
     "lodash": "4.17.4",
     "moment": "2.18.1",
