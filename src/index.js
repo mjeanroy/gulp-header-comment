@@ -26,11 +26,13 @@
 
 const fs = require('fs');
 const path = require('path');
+const log = require('fancy-log');
+const colors = require('ansi-colors');
+const PluginError = require('plugin-error');
 const _ = require('lodash');
 const moment = require('moment');
 const commenting = require('commenting');
 const through = require('through2');
-const gutil = require('gulp-util');
 const read = require('./read');
 
 module.exports = function gulpHeaderComment(options = {}) {
@@ -64,10 +66,10 @@ module.exports = function gulpHeaderComment(options = {}) {
       })
       .catch((err) => {
         // Log error.
-        gutil.log(gutil.colors.red(`gulp-header-comment: ${err}`));
+        log(colors.red(`gulp-header-comment: ${err}`));
 
         // Wrap error.
-        cb(new gutil.PluginError('gulp-header-comment', err));
+        cb(new PluginError('gulp-header-comment', err));
       });
   });
 };
