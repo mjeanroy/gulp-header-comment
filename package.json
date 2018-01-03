@@ -48,7 +48,7 @@
     "gulp-git": "2.5.0",
     "gulp-jasmine": "3.0.0",
     "jasmine-core": "2.8.0",
-    "run-sequence": "2.2.0",
+    "run-sequence": "2.2.1",
     "vinyl": "2.1.0"
   }
 }
