@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "ansi-colors": "1.1.0",
-    "commenting": "1.0.4",
+    "commenting": "1.0.5",
     "fancy-log": "1.3.2",
     "lodash": "4.17.5",
     "moment": "2.20.1",
