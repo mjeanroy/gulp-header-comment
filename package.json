@@ -39,7 +39,7 @@
     "@babel/core": "7.0.0",
     "@babel/preset-env": "7.0.0",
     "del": "3.0.0",
-    "eslint": "5.0.1",
+    "eslint": "5.5.0",
     "eslint-config-google": "0.9.1",
     "gulp": "3.9.1",
     "gulp-babel": "8.0.0",
