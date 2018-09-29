@@ -46,30 +46,30 @@ module.exports = function gulpHeaderComment(options = {}) {
     }
 
     read(options)
-      .then((content) => {
-        const templateFn = _.template(content);
-        const template = templateFn({_, moment, pkg});
-        const extension = path.extname(file.path);
-        const header = commenting(template.trim(), {extension}) + separator;
+        .then((content) => {
+          const templateFn = _.template(content);
+          const template = templateFn({_, moment, pkg});
+          const extension = path.extname(file.path);
+          const header = commenting(template.trim(), {extension}) + separator;
 
-        if (file.isBuffer()) {
-          // Just prepend content.
-          file.contents = new Buffer(header + file.contents);
-        } else if (file.isStream()) {
-          // Pipe to a new stream.
-          const stream = through();
-          stream.write(new Buffer(header));
-          file.contents = file.contents.pipe(stream);
-        }
+          if (file.isBuffer()) {
+            // Just prepend content.
+            file.contents = new Buffer(header + file.contents);
+          } else if (file.isStream()) {
+            // Pipe to a new stream.
+            const stream = through();
+            stream.write(new Buffer(header));
+            file.contents = file.contents.pipe(stream);
+          }
 
-        cb(null, file);
-      })
-      .catch((err) => {
-        // Log error.
-        log(colors.red(`gulp-header-comment: ${err}`));
+          cb(null, file);
+        })
+        .catch((err) => {
+          // Log error.
+          log(colors.red(`gulp-header-comment: ${err}`));
 
-        // Wrap error.
-        cb(new PluginError('gulp-header-comment', err));
-      });
+          // Wrap error.
+          cb(new PluginError('gulp-header-comment', err));
+        });
   });
 };

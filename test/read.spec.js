@@ -40,14 +40,14 @@ describe('read', () => {
     expect(fs.readFile).toHaveBeenCalledWith(file, {encoding: 'utf-8'}, jasmine.any(Function));
 
     promise
-      .then((content) => {
-        expect(content).toBeDefined();
-        expect(content.trim()).toEqual('Hello World');
-        done();
-      })
-      .catch((err) => {
-        done.fail(err);
-      });
+        .then((content) => {
+          expect(content).toBeDefined();
+          expect(content.trim()).toEqual('Hello World');
+          done();
+        })
+        .catch((err) => {
+          done.fail(err);
+        });
   });
 
   it('should read file using custom encoding and return a promise of the content', (done) => {
@@ -58,14 +58,14 @@ describe('read', () => {
     expect(fs.readFile).toHaveBeenCalledWith(file, {encoding}, jasmine.any(Function));
 
     promise
-      .then((content) => {
-        expect(content).toBeDefined();
-        expect(content.trim()).toEqual('Hello World');
-        done();
-      })
-      .catch((err) => {
-        done.fail(err);
-      });
+        .then((content) => {
+          expect(content).toBeDefined();
+          expect(content.trim()).toEqual('Hello World');
+          done();
+        })
+        .catch((err) => {
+          done.fail(err);
+        });
   });
 
   it('should return a promise of a simple string', (done) => {
@@ -75,14 +75,14 @@ describe('read', () => {
     expect(fs.readFile).not.toHaveBeenCalled();
 
     promise
-      .then((content) => {
-        expect(content).toBeDefined();
-        expect(content).toEqual(txt);
-        done();
-      })
-      .catch((err) => {
-        done.fail(err);
-      });
+        .then((content) => {
+          expect(content).toBeDefined();
+          expect(content).toEqual(txt);
+          done();
+        })
+        .catch((err) => {
+          done.fail(err);
+        });
   });
 
   it('should return a rejected promise if file cannot be read', (done) => {
@@ -90,12 +90,12 @@ describe('read', () => {
     const promise = read({file});
 
     promise
-      .then((content) => {
-        done.fail('Promise should be rejected');
-      })
-      .catch((err) => {
-        expect(err).toBeDefined();
-        done();
-      });
+        .then((content) => {
+          done.fail('Promise should be rejected');
+        })
+        .catch((err) => {
+          expect(err).toBeDefined();
+          done();
+        });
   });
 });
