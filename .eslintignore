@@ -22,19 +22,4 @@
 # THE SOFTWARE.
 ##
 
-# NPM modules
-/node_modules
-
-# Dev files.
-/test
-/src
-/scripts
-/.eslintrc
-/.eslintignore
-/.babelrc
-/.nvmrc
-/.travis.yml
-/gulpfile.js
-
-# Logs
-*.log
+/dist
