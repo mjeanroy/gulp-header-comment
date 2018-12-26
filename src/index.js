@@ -66,7 +66,7 @@ module.exports = function gulpHeaderComment(options = {}) {
         })
         .catch((err) => {
           // Log error.
-          log(colors.red(`gulp-header-comment: ${err}`));
+          log.error(colors.red(`gulp-header-comment: ${err}`));
 
           // Wrap error.
           cb(new PluginError('gulp-header-comment', err));
