@@ -365,8 +365,6 @@ describe('gulp-header-comment', () => {
   });
 
   it('should fail if template file does not exist', (done) => {
-    spyOn(console, 'log').and.callThrough();
-
     const filePath = path.join(base, 'test.js');
     const code = fs.readFileSync(filePath, 'utf-8');
     expect(code).toBeTruthy();
@@ -379,7 +377,6 @@ describe('gulp-header-comment', () => {
 
     stream.once('error', (err) => {
       expect(err).toBeDefined();
-      expect(console.log).toHaveBeenCalled();
       done();
     });
 
