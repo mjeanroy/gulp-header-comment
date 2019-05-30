@@ -47,19 +47,13 @@ module.exports = function gulpHeaderComment(options = {}) {
 
     read(options)
         .then((content) => {
-          const templateFn = _.template(content);
-          const template = templateFn({_, moment, pkg});
-          const extension = path.extname(file.path);
-          const header = commenting(template.trim(), {extension}) + separator;
+          const extension = getExtension(file);
+          const header = generateHeader(content, extension, pkg);
 
           if (file.isBuffer()) {
-            // Just prepend content.
-            file.contents = new Buffer(header + file.contents);
+            updateFileContent(file, extension, header, separator);
           } else if (file.isStream()) {
-            // Pipe to a new stream.
-            const stream = through();
-            stream.write(new Buffer(header));
-            file.contents = file.contents.pipe(stream);
+            pipeFileContent(file, header, separator);
           }
 
           cb(null, file);
@@ -73,3 +67,163 @@ module.exports = function gulpHeaderComment(options = {}) {
         });
   });
 };
+
+/**
+ * Add header to given file content.
+ *
+ * @param {Object} file Original file.
+ * @param {string} extension File extension.
+ * @param {striing} header Header to add to given file.
+ * @param {string} separator The separator to use between header and file content.
+ * @return {void}
+ */
+function updateFileContent(file, extension, header, separator) {
+  file.contents = new Buffer(
+      addHeader(file.contents.toString(), extension, header, separator)
+  );
+}
+
+/**
+ * Stream new file content.
+ *
+ * @param {Object} file Given input file.
+ * @param {string} header Header to add to given file.
+ * @param {string} separator Separator between header and file content.
+ * @return {void}
+ */
+function pipeFileContent(file, header, separator) {
+  const stream = through();
+  stream.write(new Buffer(header + separator));
+  file.contents = file.contents.pipe(stream);
+}
+
+/**
+ * Get extension for given file.
+ *
+ * @param {Object} file The file.
+ * @return {string} File extension.
+ */
+function getExtension(file) {
+  const ext = path.extname(file.path);
+  return ext ? ext.toLowerCase() : ext;
+}
+
+/**
+ * Generate header from given template.
+ *
+ * @param {string} content Template of header.
+ * @param {string} extension Target file extension.
+ * @param {Object} pkg The `package.json` descriptor that will be injected when template will be evaluated.
+ * @return {string} Interpolated header.
+ */
+function generateHeader(content, extension, pkg) {
+  const templateFn = _.template(content);
+  const template = templateFn({_, moment, pkg});
+  return commenting(template.trim(), {extension});
+}
+
+/**
+ * Add header to given file content.
+ *
+ * @param {string} content Original file content.
+ * @param {string} extension Original file extension.
+ * @param {string} header The header to add.
+ * @param {string} separator The separator to use between original file content and separator.
+ * @return {string} The resulting file content.
+ */
+function addHeader(content, extension, header, separator) {
+  const type = extension.slice(1);
+  if (!maySkipFirstLine(type)) {
+    return prependHeader(content, header, separator);
+  }
+
+  const lineSeparator = '\n';
+  const lines = content.split(lineSeparator);
+  const firstLine = lines[0].toLowerCase();
+  const trimmedFirstLine = _.trim(firstLine);
+
+  if (!shouldSkipFirstLine(type, trimmedFirstLine)) {
+    return prependHeader(content, header, separator);
+  }
+
+  const otherLines = lines.slice(1).join(lineSeparator);
+  return firstLine + separator + separator + header + separator + otherLines;
+}
+
+/**
+ * Prepend header to given file content.
+ *
+ * @param {string} content Original file content.
+ * @param {string} header Header to prepend.
+ * @param {string} separator The separator between header and file content.
+ * @return {string} The resulting file content.
+ */
+function prependHeader(content, header, separator) {
+  return header + separator + content;
+}
+
+// Set of checker function for each file type that may start with a prolog ling.
+const prologCheckers = {
+  /**
+   * Check that given line is the `DOCTYPE` line.
+   *
+   * @param {string} line The line to check.
+   * @return {boolean} `true` if given is an HTML `DOCTYPE`, `false` otherwise.
+   */
+  htm(line) {
+    return this.html(line);
+  },
+
+  /**
+   * Check that given line is the `DOCTYPE` line.
+   *
+   * @param {string} line The line to check.
+   * @return {boolean} `true` if given is an HTML `DOCTYPE`, `false` otherwise.
+   */
+  html(line) {
+    return _.startsWith(line, '<!doctype');
+  },
+
+  /**
+   * Check that given line is the `XML` line.
+   *
+   * @param {string} line The line to check.
+   * @return {boolean} `true` if given is an HTML `XML`, `false` otherwise.
+   */
+  xml(line) {
+    return _.startsWith(line, '<?xml');
+  },
+
+  /**
+   * Check that given line is the `XML` line.
+   *
+   * @param {string} line The line to check.
+   * @return {boolean} `true` if given is an HTML `XML`, `false` otherwise.
+   */
+  svg(line) {
+    return this.xml(line);
+  },
+};
+
+/**
+ * Check if given file type (`js`, `xml`, etc.) may start with a given prolog (a.k.a declaration).
+ * For example, XML/SVG files may include a prolog such as `<?xml version="1.0" encoding="UTF-8"?>` and this
+ * prolog must always be the first line (before anything else, including comments).
+ *
+ * @param {string} type File type.
+ * @return {boolean} `true` if given file type may start with a prolog, `false` otherwise.
+ */
+function maySkipFirstLine(type) {
+  return _.has(prologCheckers, type);
+}
+
+/**
+ * Check if given line should be skipped before adding header content.
+ *
+ * @param {string} type File type.
+ * @param {string} line The first line of given file.
+ * @return {boolean} `true` if given line should be skipped, `false` otherwise.
+ */
+function shouldSkipFirstLine(type, line) {
+  return prologCheckers[type](line);
+}

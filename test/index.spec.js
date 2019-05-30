@@ -77,10 +77,12 @@ describe('gulp-header-comment', () => {
     const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
-    const expectedHeader =
-      '/**' + EOL +
-      ' * Hello World' + EOL +
-      ' */';
+    const expectedHeader = joinLines([
+      '/**',
+      ' * Hello World',
+      ' */',
+      '',
+    ]);
 
     const stream = gulpHeaderComment({
       file: headerFile,
@@ -92,7 +94,10 @@ describe('gulp-header-comment', () => {
       expect(newFile.base).toEqual(base);
       expect(newFile.path).toEqual(filePath);
       expect(newFile.contents).not.toBeNull();
-      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
+      expect(newFile.contents.toString()).toEqual(joinLines([
+        expectedHeader,
+        code,
+      ]));
     });
 
     stream.once('error', (err) => {
@@ -118,10 +123,12 @@ describe('gulp-header-comment', () => {
 
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
-    const expectedHeader =
-      '/**' + EOL +
-      ' * Hello World' + EOL +
-      ' */';
+    const expectedHeader = joinLines([
+      '/**',
+      ' * Hello World',
+      ' */',
+      '',
+    ]);
 
     const stream = gulpHeaderComment({
       file: headerFile,
@@ -141,7 +148,11 @@ describe('gulp-header-comment', () => {
       });
 
       newFile.contents.once('end', () => {
-        expect(newContent).toEqual(expectedHeader + EOL + EOL + code);
+        expect(newContent).toEqual(joinLines([
+          expectedHeader,
+          code,
+        ]));
+
         done();
       });
     });
@@ -162,10 +173,12 @@ describe('gulp-header-comment', () => {
     const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
-    const expectedHeader =
-      '/**' + EOL +
-      ' * Hello World' + EOL +
-      ' */';
+    const expectedHeader = joinLines([
+      '/**',
+      ' * Hello World',
+      ' */',
+      '',
+    ]);
 
     const stream = gulpHeaderComment({
       file: headerFile,
@@ -177,7 +190,10 @@ describe('gulp-header-comment', () => {
       expect(newFile.base).toEqual(base);
       expect(newFile.path).toEqual(filePath);
       expect(newFile.contents).not.toBeNull();
-      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
+      expect(newFile.contents.toString()).toEqual(joinLines([
+        expectedHeader,
+        code,
+      ]));
     });
 
     stream.once('error', (err) => {
@@ -200,10 +216,12 @@ describe('gulp-header-comment', () => {
     const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const header = 'Hello World';
-    const expectedHeader =
-      '/**' + EOL +
-      ' * ' + header + EOL +
-      ' */';
+    const expectedHeader = joinLines([
+      '/**',
+      ' * ' + header,
+      ' */',
+      '',
+    ]);
 
     const stream = gulpHeaderComment(header);
 
@@ -213,7 +231,10 @@ describe('gulp-header-comment', () => {
       expect(newFile.base).toEqual(base);
       expect(newFile.path).toEqual(filePath);
       expect(newFile.contents).not.toBeNull();
-      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
+      expect(newFile.contents.toString()).toEqual(joinLines([
+        expectedHeader,
+        code,
+      ]));
     });
 
     stream.once('error', (err) => {
@@ -236,10 +257,12 @@ describe('gulp-header-comment', () => {
     const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
-    const expectedHeader =
-      '/**' + EOL +
-      ' * Hello World' + EOL +
-      ' */';
+    const expectedHeader = joinLines([
+      '/**',
+      ' * Hello World',
+      ' */',
+      '',
+    ]);
 
     const separator = '//' + EOL;
 
@@ -254,7 +277,7 @@ describe('gulp-header-comment', () => {
       expect(newFile.base).toEqual(base);
       expect(newFile.path).toEqual(filePath);
       expect(newFile.contents).not.toBeNull();
-      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + separator + code);
+      expect(newFile.contents.toString()).toEqual(expectedHeader + separator + code);
     });
 
     stream.once('error', (err) => {
@@ -286,7 +309,7 @@ describe('gulp-header-comment', () => {
 
     spyOn(fs, 'readFile').and.callThrough();
 
-    stream.on('data', (newFile) => {
+    stream.on('data', () => {
       expect(fs.readFile).toHaveBeenCalledWith(jasmine.any(String), {encoding}, jasmine.any(Function));
     });
 
@@ -310,15 +333,20 @@ describe('gulp-header-comment', () => {
     const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const header = `Generated on <%= moment().format('YYYY') %>`;
-    const expectedHeader =
-      '/**' + EOL +
-      ' * Generated on ' + moment().format('YYYY') + EOL +
-      ' */';
+    const expectedHeader = joinLines([
+      '/**',
+      ' * Generated on ' + moment().format('YYYY'),
+      ' */',
+      '',
+    ]);
 
     const stream = gulpHeaderComment(header);
 
     stream.on('data', (newFile) => {
-      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
+      expect(newFile.contents.toString()).toEqual(joinLines([
+        expectedHeader,
+        code,
+      ]));
     });
 
     stream.once('error', (err) => {
@@ -341,15 +369,20 @@ describe('gulp-header-comment', () => {
     const contents = new Buffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const header = `Lib: <%= pkg.name %>`;
-    const expectedHeader =
-      '/**' + EOL +
-      ' * Lib: gulp-header-comment' + EOL +
-      ' */';
+    const expectedHeader = joinLines([
+      '/**',
+      ' * Lib: gulp-header-comment',
+      ' */',
+      '',
+    ]);
 
     const stream = gulpHeaderComment(header);
 
     stream.on('data', (newFile) => {
-      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
+      expect(newFile.contents.toString()).toEqual(joinLines([
+        expectedHeader,
+        code,
+      ]));
     });
 
     stream.once('error', (err) => {
@@ -397,10 +430,12 @@ describe('gulp-header-comment', () => {
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
 
-    const expectedHeader =
-      '#' + EOL +
-      '# Hello World' + EOL +
-      '#';
+    const expectedHeader = joinLines([
+      '#',
+      '# Hello World',
+      '#',
+      '',
+    ]);
 
     const stream = gulpHeaderComment({
       file: headerFile,
@@ -412,7 +447,10 @@ describe('gulp-header-comment', () => {
       expect(newFile.base).toEqual(base);
       expect(newFile.path).toEqual(filePath);
       expect(newFile.contents).not.toBeNull();
-      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
+      expect(newFile.contents.toString()).toEqual(joinLines([
+        expectedHeader,
+        code,
+      ]));
     });
 
     stream.once('error', (err) => {
@@ -436,10 +474,12 @@ describe('gulp-header-comment', () => {
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
 
-    const expectedHeader =
-      '#' + EOL +
-      '# Hello World' + EOL +
-      '#';
+    const expectedHeader = joinLines([
+      '#',
+      '# Hello World',
+      '#',
+      '',
+    ]);
 
     const stream = gulpHeaderComment({
       file: headerFile,
@@ -451,7 +491,10 @@ describe('gulp-header-comment', () => {
       expect(newFile.base).toEqual(base);
       expect(newFile.path).toEqual(filePath);
       expect(newFile.contents).not.toBeNull();
-      expect(newFile.contents.toString()).toEqual(expectedHeader + EOL + EOL + code);
+      expect(newFile.contents.toString()).toEqual(joinLines([
+        expectedHeader,
+        code,
+      ]));
     });
 
     stream.once('error', (err) => {
@@ -465,4 +508,61 @@ describe('gulp-header-comment', () => {
     stream.write(vinyl);
     stream.end();
   });
+
+  it('should prepend header not at first line with files such as SVG file', (done) => {
+    const filePath = path.join(base, 'test.svg');
+    const code = fs.readFileSync(filePath);
+    expect(code).toBeTruthy();
+
+    const contents = new Buffer(code);
+    const vinyl = new Vinyl({cwd, base, contents, path: filePath});
+    const headerFile = path.join(base, 'test.txt');
+
+    const stream = gulpHeaderComment({
+      file: headerFile,
+    });
+
+    stream.on('data', (newFile) => {
+      expect(newFile).toBeDefined();
+      expect(newFile.cwd).toEqual(cwd);
+      expect(newFile.base).toEqual(base);
+      expect(newFile.path).toEqual(filePath);
+      expect(newFile.contents).not.toBeNull();
+      expect(newFile.contents.toString()).toEqual(joinLines([
+        '<?xml version="1.0" encoding="utf-8"?>',
+        '',
+        '<!--',
+        ' // Hello World',
+        '-->',
+        '',
+        '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="200">',
+        '  <rect width="100" height="80" x="0" y="70" fill="green" />',
+        '  <line x1="5" y1="5" x2="250" y2="95" stroke="red" />',
+        '  <circle cx="90" cy="80" r="50" fill="blue" />',
+        '  <text x="180" y="60">Un texte</text>',
+        '</svg>',
+        '',
+      ]));
+    });
+
+    stream.once('error', (err) => {
+      done.fail(err);
+    });
+
+    stream.once('end', () => {
+      done();
+    });
+
+    stream.write(vinyl);
+    stream.end();
+  });
+
+  /**
+   * Join given strings with the EOL character.
+   * @param {Array<string>} lines Given lines to join.
+   * @return {string} Joined lines.
+   */
+  function joinLines(lines) {
+    return lines.join(EOL);
+  }
 });
