@@ -1,6 +1,7 @@
+/* eslint-disable */
+
 'use strict';
 
-// eslint-disable-next-line
 function sayHello() {
   console.log('Hello World');
 }
