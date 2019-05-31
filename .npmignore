@@ -29,6 +29,7 @@
 /test
 /src
 /scripts
+/.vscode
 /.eslintrc
 /.eslintignore
 /.babelrc
