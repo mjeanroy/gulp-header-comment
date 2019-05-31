@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const fs = require('fs-extra');
 const log = require('fancy-log');
 const gulp = require('gulp');
 const bump = require('gulp-bump');
@@ -62,8 +63,9 @@ function performRelease() {
  * @return {void}
  */
 function tagRelease(done) {
-  const version = require(config.pkg).version;
-  git.tag(`v${version}`, `release: tag version ${version}`, done);
+  fs.readJson(config.pkg)
+      .then((pkg) => pkg.version)
+      .then((version) => git.tag(`v${version}`, `release: tag version ${version}`, done));
 }
 
 /**
