@@ -557,6 +557,63 @@ describe('gulp-header-comment', () => {
     stream.end();
   });
 
+  it('should add header after first in case of SVG file with stream content', (done) => {
+    const filePath = path.join(base, 'test.svg');
+    const code = fs.readFileSync(filePath, 'utf-8');
+    expect(code).toBeTruthy();
+
+    const contents = new Stream.Readable();
+    contents.push(code);
+    contents.push(null);
+
+    const vinyl = new Vinyl({cwd, base, contents, path: filePath});
+    const headerFile = path.join(base, 'test.txt');
+    const stream = gulpHeaderComment({
+      file: headerFile,
+    });
+
+    stream.on('data', (newFile) => {
+      expect(newFile).toBeDefined();
+      expect(newFile.cwd).toEqual(cwd);
+      expect(newFile.base).toEqual(base);
+      expect(newFile.path).toEqual(filePath);
+      expect(newFile.contents).not.toBeNull();
+
+      let newContent = '';
+
+      newFile.contents.on('data', (chunk) => {
+        newContent += chunk;
+      });
+
+      newFile.contents.once('end', () => {
+        expect(newContent.toString()).toEqual(joinLines([
+          '<?xml version="1.0" encoding="utf-8"?>',
+          '',
+          '<!--',
+          ' // Hello World',
+          '-->',
+          '',
+          '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="200">',
+          '  <rect width="100" height="80" x="0" y="70" fill="green" />',
+          '  <line x1="5" y1="5" x2="250" y2="95" stroke="red" />',
+          '  <circle cx="90" cy="80" r="50" fill="blue" />',
+          '  <text x="180" y="60">Un texte</text>',
+          '</svg>',
+          '',
+        ]));
+
+        done();
+      });
+    });
+
+    stream.once('error', (err) => {
+      done.fail(err);
+    });
+
+    stream.write(vinyl);
+    stream.end();
+  });
+
   /**
    * Join given strings with the EOL character.
    * @param {Array<string>} lines Given lines to join.

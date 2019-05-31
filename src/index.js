@@ -26,6 +26,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const stringDecoder = require('string_decoder');
 const log = require('fancy-log');
 const colors = require('ansi-colors');
 const PluginError = require('plugin-error');
@@ -48,12 +49,13 @@ module.exports = function gulpHeaderComment(options = {}) {
     read(options)
         .then((content) => {
           const extension = getExtension(file);
+          const type = extension.slice(1);
           const header = generateHeader(content, extension, pkg);
 
           if (file.isBuffer()) {
-            updateFileContent(file, extension, header, separator);
+            updateFileContent(file, type, header, separator);
           } else if (file.isStream()) {
-            pipeFileContent(file, header, separator);
+            pipeFileContent(file, type, header, separator);
           }
 
           cb(null, file);
@@ -72,29 +74,66 @@ module.exports = function gulpHeaderComment(options = {}) {
  * Add header to given file content.
  *
  * @param {Object} file Original file.
- * @param {string} extension File extension.
- * @param {striing} header Header to add to given file.
+ * @param {string} type File type.
+ * @param {string} header Header to add to given file.
  * @param {string} separator The separator to use between header and file content.
  * @return {void}
  */
-function updateFileContent(file, extension, header, separator) {
+function updateFileContent(file, type, header, separator) {
   file.contents = new Buffer(
-      addHeader(file.contents.toString(), extension, header, separator)
+      addHeader(file.contents.toString(), type, header, separator)
   );
 }
 
 /**
  * Stream new file content.
  *
- * @param {Object} file Given input file.
+ * @param {File} file Given input file.
+ * @param {string} type The file type.
  * @param {string} header Header to add to given file.
  * @param {string} separator Separator between header and file content.
  * @return {void}
  */
-function pipeFileContent(file, header, separator) {
+function pipeFileContent(file, type, header, separator) {
+  return maySkipFirstLine(type) ?
+    transformFileStreamContent(file, type, header, separator) :
+    prependPipeStream(file, header, separator);
+}
+
+/**
+ * A very simple function that prepend header to file stream input.
+ *
+ * @param {File} file The original file stream.
+ * @param {string} header The header to prepend to original file stream.
+ * @param {string} separator The separator to use between header and file content.
+ * @return {void}
+ */
+function prependPipeStream(file, header, separator) {
   const stream = through();
   stream.write(new Buffer(header + separator));
   file.contents = file.contents.pipe(stream);
+}
+
+/**
+ * A very simple function that prepend header to file stream input.
+ *
+ * @param {File} file The original file stream.
+ * @param {string} type File type.
+ * @param {string} header The header to prepend to original file stream.
+ * @param {string} separator The separator to use between header and file content.
+ * @return {void}
+ */
+function transformFileStreamContent(file, type, header, separator) {
+  file.contents = file.contents.pipe(through(function transformFunction(chunk, enc, cb) {
+    const decoder = new stringDecoder.StringDecoder();
+    const rawChunk = decoder.end(chunk);
+    const newContent = addHeader(rawChunk, type, header, separator);
+
+    // eslint-disable-next-line no-invalid-this
+    this.push(newContent);
+
+    cb();
+  }));
 }
 
 /**
@@ -126,13 +165,12 @@ function generateHeader(content, extension, pkg) {
  * Add header to given file content.
  *
  * @param {string} content Original file content.
- * @param {string} extension Original file extension.
+ * @param {string} type Original file type.
  * @param {string} header The header to add.
  * @param {string} separator The separator to use between original file content and separator.
  * @return {string} The resulting file content.
  */
-function addHeader(content, extension, header, separator) {
-  const type = extension.slice(1);
+function addHeader(content, type, header, separator) {
   if (!maySkipFirstLine(type)) {
     return prependHeader(content, header, separator);
   }
