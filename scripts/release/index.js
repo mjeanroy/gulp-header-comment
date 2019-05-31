@@ -65,7 +65,8 @@ function performRelease() {
 function tagRelease(done) {
   fs.readJson(config.pkg)
       .then((pkg) => pkg.version)
-      .then((version) => git.tag(`v${version}`, `release: tag version ${version}`, done));
+      .then((version) => git.tag(`v${version}`, `release: tag version ${version}`, done))
+      .catch((err) => done(err));
 }
 
 /**
