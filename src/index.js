@@ -185,7 +185,7 @@ function addHeader(content, type, header, separator) {
   }
 
   const otherLines = lines.slice(1).join(lineSeparator);
-  return firstLine + separator + separator + header + separator + otherLines;
+  return lines[0] + separator + separator + header + separator + otherLines;
 }
 
 /**

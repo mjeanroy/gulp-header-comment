@@ -8,6 +8,6 @@
     "es6": true
   },
   "rules": {
-    "max-len": [2, 140, 2]
+    "max-len": [2, 200, 2]
   }
 }

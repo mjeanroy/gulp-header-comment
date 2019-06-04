@@ -578,12 +578,7 @@ describe('gulp-header-comment', () => {
         ' // Hello World',
         '-->',
         '',
-        '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="200">',
-        '  <rect width="100" height="80" x="0" y="70" fill="green" />',
-        '  <line x1="5" y1="5" x2="250" y2="95" stroke="red" />',
-        '  <circle cx="90" cy="80" r="50" fill="blue" />',
-        '  <text x="180" y="60">Un texte</text>',
-        '</svg>',
+        '<path d="M122 98h14v12a9.56 9.56 0 0 1-7 9.5c-8.28 2.26-25 3.73-25-23.5 0-29.5 26.56-25.9 30.5-18.5M80 72v50M88 108H54l26-36" />',
         '',
       ]));
     });
@@ -636,12 +631,7 @@ describe('gulp-header-comment', () => {
           ' // Hello World',
           '-->',
           '',
-          '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="200">',
-          '  <rect width="100" height="80" x="0" y="70" fill="green" />',
-          '  <line x1="5" y1="5" x2="250" y2="95" stroke="red" />',
-          '  <circle cx="90" cy="80" r="50" fill="blue" />',
-          '  <text x="180" y="60">Un texte</text>',
-          '</svg>',
+          '<path d="M122 98h14v12a9.56 9.56 0 0 1-7 9.5c-8.28 2.26-25 3.73-25-23.5 0-29.5 26.56-25.9 30.5-18.5M80 72v50M88 108H54l26-36" />',
           '',
         ]));
 
