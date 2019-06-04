@@ -37,7 +37,7 @@ module.exports = {
   'clean': clean,
   'lint': lint,
   'build': gulp.series(prebuild, build),
-  'tdd': gulp.series(test.tdd),
+  'tdd': gulp.series(pretest, test.tdd),
   'test': gulp.series(pretest, test.test),
   'release:patch': gulp.series(prerelease, release.patch),
   'release:minor': gulp.series(prerelease, release.minor),

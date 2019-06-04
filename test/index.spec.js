@@ -509,6 +509,49 @@ describe('gulp-header-comment', () => {
     stream.end();
   });
 
+  it('should prepend header not at first line with files such as XML file', (done) => {
+    const filePath = path.join(base, 'test.xml');
+    const code = fs.readFileSync(filePath);
+    expect(code).toBeTruthy();
+
+    const contents = new Buffer(code);
+    const vinyl = new Vinyl({cwd, base, contents, path: filePath});
+    const headerFile = path.join(base, 'test.txt');
+
+    const stream = gulpHeaderComment({
+      file: headerFile,
+    });
+
+    stream.on('data', (newFile) => {
+      expect(newFile).toBeDefined();
+      expect(newFile.cwd).toEqual(cwd);
+      expect(newFile.base).toEqual(base);
+      expect(newFile.path).toEqual(filePath);
+      expect(newFile.contents).not.toBeNull();
+      expect(newFile.contents.toString()).toEqual(joinLines([
+        '<?xml version="1.0" encoding="utf-8"?>',
+        '',
+        '<!--',
+        ' // Hello World',
+        '-->',
+        '',
+        '<message>Hello World</message>',
+        '',
+      ]));
+    });
+
+    stream.once('error', (err) => {
+      done.fail(err);
+    });
+
+    stream.once('end', () => {
+      done();
+    });
+
+    stream.write(vinyl);
+    stream.end();
+  });
+
   it('should prepend header not at first line with files such as SVG file', (done) => {
     const filePath = path.join(base, 'test.svg');
     const code = fs.readFileSync(filePath);
