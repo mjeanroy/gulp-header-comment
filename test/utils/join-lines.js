@@ -22,24 +22,13 @@
  * THE SOFTWARE.
  */
 
-'use strict';
+const EOL = require('./eol');
 
-const fs = require('fs');
-const _ = require('lodash');
-const Q = require('q');
-
-module.exports = function read(options) {
-  if (_.isString(options)) {
-    return Q.when(options);
-  }
-
-  const file = options.file;
-  const encoding = options.encoding || 'utf-8';
-  const deferred = Q.defer();
-
-  fs.readFile(file, {encoding}, (err, data) => {
-    return err ? deferred.reject(err) : deferred.resolve(data);
-  });
-
-  return deferred.promise;
+/**
+ * Join given strings with the EOL character.
+ * @param {Array<string>} lines Given lines to join.
+ * @return {string} Joined lines.
+ */
+module.exports = function joinLines(lines) {
+  return lines.join(EOL);
 };

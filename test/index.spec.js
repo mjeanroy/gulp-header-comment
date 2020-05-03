@@ -30,7 +30,8 @@ const Vinyl = require('vinyl');
 const Stream = require('stream');
 const moment = require('moment');
 const gulpHeaderComment = require('../src/index');
-const EOL = '\n';
+const joinLines = require('./utils/join-lines');
+const EOL = require('./utils/eol');
 
 describe('gulp-header-comment', () => {
   let cwd;
@@ -646,13 +647,4 @@ describe('gulp-header-comment', () => {
     stream.write(vinyl);
     stream.end();
   });
-
-  /**
-   * Join given strings with the EOL character.
-   * @param {Array<string>} lines Given lines to join.
-   * @return {string} Joined lines.
-   */
-  function joinLines(lines) {
-    return lines.join(EOL);
-  }
 });

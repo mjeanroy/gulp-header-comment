@@ -34,7 +34,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const commenting = require('commenting');
 const through = require('through2');
-const read = require('./read');
+const Q = require('q');
 
 module.exports = function gulpHeaderComment(options = {}) {
   const separator = _.isObject(options) && _.isString(options.separator) ? options.separator : '\n';
@@ -264,4 +264,26 @@ function maySkipFirstLine(type) {
  */
 function shouldSkipFirstLine(type, line) {
   return prologCheckers[type](line);
+}
+
+/**
+ * Read file specified by given options.
+ *
+ * @param {Object} options Read options.
+ * @return {Promise<string>} A promise resolved with file content.
+ */
+function read(options) {
+  if (_.isString(options)) {
+    return Q.when(options);
+  }
+
+  const file = options.file;
+  const encoding = options.encoding || 'utf-8';
+  const deferred = Q.defer();
+
+  fs.readFile(file, {encoding}, (err, data) => {
+    return err ? deferred.reject(err) : deferred.resolve(data);
+  });
+
+  return deferred.promise;
 }
