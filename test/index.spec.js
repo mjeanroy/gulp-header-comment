@@ -29,7 +29,7 @@ const path = require('path');
 const Vinyl = require('vinyl');
 const Stream = require('stream');
 const moment = require('moment');
-const gulpHeaderComment = require('../dist/index');
+const gulpHeaderComment = require('../src/index');
 const EOL = '\n';
 
 describe('gulp-header-comment', () => {

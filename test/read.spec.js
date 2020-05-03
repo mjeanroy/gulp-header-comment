@@ -26,7 +26,7 @@
 
 const path = require('path');
 const fs = require('fs');
-const read = require('../dist/read');
+const read = require('../src/read');
 
 describe('read', () => {
   beforeEach(() => {
