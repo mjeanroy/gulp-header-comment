@@ -22,9 +22,32 @@
  * SOFTWARE.
  */
 
-const rimraf = require('rimraf');
-const config = require('../config');
+'use strict';
 
-module.exports = function clean(done) {
-  return rimraf(config.dist, done);
+const log = require('fancy-log');
+const colors = require('ansi-colors');
+
+/**
+ * Log message to output using `DEBUG` level.
+ *
+ * @param {string} msg Message to log.
+ * @return {void}
+ */
+function debug(msg) {
+  log(colors.grey(msg));
+}
+
+/**
+ * Log message to output using `ERROR` level.
+ *
+ * @param {string} msg Message to log.
+ * @return {void}
+ */
+function error(msg) {
+  log(colors.red(msg));
+}
+
+module.exports = {
+  debug,
+  error,
 };
