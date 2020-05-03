@@ -26,15 +26,17 @@
 /node_modules
 
 # Dev files.
-/test
 /src
+/test
 /scripts
-/.vscode
+/.babelrc
 /.eslintrc
 /.eslintignore
-/.babelrc
+/.gitattributes
+/.github
 /.nvmrc
 /.travis.yml
+/.vscode
 /gulpfile.js
 
 # Logs
