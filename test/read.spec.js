@@ -90,7 +90,7 @@ describe('read', () => {
     const promise = read({file});
 
     promise
-        .then((content) => {
+        .then(() => {
           done.fail('Promise should be rejected');
         })
         .catch((err) => {
