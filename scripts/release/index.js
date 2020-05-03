@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const fs = require('fs-extra');
+const fs = require('fs');
 const log = require('fancy-log');
 const gulp = require('gulp');
 const bump = require('gulp-bump');
@@ -63,10 +63,16 @@ function performRelease() {
  * @return {void}
  */
 function tagRelease(done) {
-  fs.readJson(config.pkg)
-      .then((pkg) => pkg.version)
-      .then((version) => git.tag(`v${version}`, `release: tag version ${version}`, done))
-      .catch((err) => done(err));
+  fs.readFile(config.pkg, 'utf-8', (err, content) => {
+    if (err) {
+      done(err);
+      return;
+    }
+
+    const pkg = JSON.parse(content);
+    const version = pkg.version;
+    git.tag(`v${version}`, `release: tag version ${version}`, done);
+  });
 }
 
 /**
