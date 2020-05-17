@@ -86,7 +86,7 @@ function updateFileContent(file, type, header, separator) {
   const fname = file.relative;
   const result = transform(fname, input, type, header, separator);
 
-  file.contents = new Buffer(result.code);
+  file.contents = toBuffer(result.code);
 
   if (file.sourceMap && result.map) {
     applySourceMap(file, result.map);
@@ -118,7 +118,7 @@ function pipeFileContent(file, type, header, separator) {
  */
 function prependPipeStream(file, header, separator) {
   const stream = through();
-  stream.write(new Buffer(header + separator));
+  stream.write(toBuffer(header + separator));
   file.contents = file.contents.pipe(stream);
 }
 
@@ -313,4 +313,14 @@ function read(options) {
   });
 
   return deferred.promise;
+}
+
+/**
+ * Creates a new Buffer containing string.
+ *
+ * @param {string} rawString The string content.
+ * @return {Buffer} Node Buffer.
+ */
+function toBuffer(rawString) {
+  return Buffer.from ? Buffer.from(rawString) : new Buffer(rawString);
 }
