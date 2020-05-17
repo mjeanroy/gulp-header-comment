@@ -28,6 +28,7 @@ const path = require('path');
 const fs = require('fs');
 const gulp = require('gulp');
 const tmp = require('tmp');
+const sourcemaps = require('gulp-sourcemaps');
 const headerComment = require('../src/index');
 const joinLines = require('./utils/join-lines');
 
@@ -67,6 +68,47 @@ describe('[IT] gulp-header-comment', () => {
               '',
               'Hello World',
               '',
+            ]));
+
+            done();
+          });
+        });
+  });
+
+  it('should prepend header and apply sourcemap', (done) => {
+    const fname = 'test.js';
+    const src = path.join(__dirname, 'fixtures', fname);
+    const dest = path.join(tmpDir.name);
+
+    gulp.src(src)
+        .pipe(sourcemaps.init())
+        .pipe(headerComment('License MIT'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(dest))
+        .on('error', (err) => done.fail(err))
+        .on('end', () => {
+          fs.readFile(path.join(dest, `${fname}.map`), 'utf8', (err, data) => {
+            if (err) {
+              done.fail(err);
+              return;
+            }
+
+            const sourcemap = JSON.parse(data);
+
+            expect(sourcemap.version).toBe(3);
+            expect(sourcemap.file).toBe(fname);
+            expect(sourcemap.sources).toEqual([fname]);
+            expect(sourcemap.mappings).toBeDefined();
+            expect(sourcemap.mappings.length).toBe(462);
+            expect(sourcemap.sourcesContent.toString()).toEqual(joinLines([
+              `/* eslint-disable */`,
+              ``,
+              `'use strict';`,
+              ``,
+              `function sayHello() {`,
+              `  console.log('Hello World');`,
+              `}`,
+              ``,
             ]));
 
             done();

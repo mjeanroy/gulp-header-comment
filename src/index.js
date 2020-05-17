@@ -34,6 +34,8 @@ const _ = require('lodash');
 const moment = require('moment');
 const commenting = require('commenting');
 const through = require('through2');
+const applySourceMap = require('vinyl-sourcemaps-apply');
+const MagicString = require('magic-string');
 const Q = require('q');
 
 module.exports = function gulpHeaderComment(options = {}) {
@@ -80,9 +82,15 @@ module.exports = function gulpHeaderComment(options = {}) {
  * @return {void}
  */
 function updateFileContent(file, type, header, separator) {
-  file.contents = new Buffer(
-      addHeader(file.contents.toString(), type, header, separator)
-  );
+  const input = file.contents.toString();
+  const fname = file.relative;
+  const result = transform(fname, input, type, header, separator);
+
+  file.contents = new Buffer(result.code);
+
+  if (file.sourceMap && result.map) {
+    applySourceMap(file, result.map);
+  }
 }
 
 /**
@@ -127,7 +135,13 @@ function transformFileStreamContent(file, type, header, separator) {
   file.contents = file.contents.pipe(through(function transformFunction(chunk, enc, cb) {
     const decoder = new stringDecoder.StringDecoder();
     const rawChunk = decoder.end(chunk);
-    const newContent = addHeader(rawChunk, type, header, separator);
+    const fname = file.relative;
+    const result = transform(fname, rawChunk, type, header, separator);
+    const newContent = result.code;
+
+    if (file.sourceMap && result.map) {
+      applySourceMap(file, result.map);
+    }
 
     // eslint-disable-next-line no-invalid-this
     this.push(newContent);
@@ -164,40 +178,53 @@ function generateHeader(content, extension, pkg) {
 /**
  * Add header to given file content.
  *
+ * @param {string} fname File name.
  * @param {string} content Original file content.
  * @param {string} type Original file type.
  * @param {string} header The header to add.
  * @param {string} separator The separator to use between original file content and separator.
  * @return {string} The resulting file content.
  */
-function addHeader(content, type, header, separator) {
+function transform(fname, content, type, header, separator) {
+  const magicStr = new MagicString(content);
+
   if (!maySkipFirstLine(type)) {
-    return prependHeader(content, header, separator);
+    prependHeader(magicStr, header, separator);
+  } else {
+    const lineSeparator = '\n';
+    const lines = content.split(lineSeparator);
+    const firstLine = lines[0].toLowerCase();
+    const trimmedFirstLine = _.trim(firstLine);
+
+    if (!shouldSkipFirstLine(type, trimmedFirstLine)) {
+      prependHeader(magicStr, header, separator);
+    } else {
+      magicStr.appendRight(lines[0].length, separator + separator + header);
+    }
   }
 
-  const lineSeparator = '\n';
-  const lines = content.split(lineSeparator);
-  const firstLine = lines[0].toLowerCase();
-  const trimmedFirstLine = _.trim(firstLine);
-
-  if (!shouldSkipFirstLine(type, trimmedFirstLine)) {
-    return prependHeader(content, header, separator);
-  }
-
-  const otherLines = lines.slice(1).join(lineSeparator);
-  return lines[0] + separator + separator + header + separator + otherLines;
+  return {
+    code: magicStr.toString(),
+    map: magicStr.generateMap({
+      file: `${fname}.map`,
+      source: fname,
+      includeContent: true,
+      hires: true,
+    }),
+  };
 }
 
 /**
  * Prepend header to given file content.
  *
- * @param {string} content Original file content.
+ * @param {MagicString} magicStr Original file content.
  * @param {string} header Header to prepend.
  * @param {string} separator The separator between header and file content.
- * @return {string} The resulting file content.
  */
-function prependHeader(content, header, separator) {
-  return header + separator + content;
+function prependHeader(magicStr, header, separator) {
+  magicStr.prepend(
+      header + separator
+  );
 }
 
 // Set of checker function for each file type that may start with a prolog ling.

@@ -27,8 +27,9 @@ const EOL = require('./eol');
 /**
  * Join given strings with the EOL character.
  * @param {Array<string>} lines Given lines to join.
+ * @param {string} joiner The character to use to join lines.
  * @return {string} Joined lines.
  */
-module.exports = function joinLines(lines) {
-  return lines.join(EOL);
+module.exports = function joinLines(lines, joiner = EOL) {
+  return lines.join(joiner);
 };
