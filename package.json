@@ -33,7 +33,7 @@
     "fancy-log": "1.3.3",
     "lodash": "4.17.15",
     "magic-string": "0.25.7",
-    "moment": "2.25.1",
+    "moment": "2.26.0",
     "plugin-error": "1.0.1",
     "q": "1.5.1",
     "through2": "3.0.1",
