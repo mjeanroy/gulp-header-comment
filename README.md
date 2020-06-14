@@ -59,12 +59,7 @@ gulp.src('**/*.js')
 
 ## ChangeLogs
 
-- 0.2.1
-  - Fix comment style for `.appcache` files.
-- 0.2.0
-  - Dependency update (`moment`).
-  - Dependency update (`q`).
-- 0.1.0 : First release
+See [here](https://github.com/mjeanroy/gulp-header-comment/blob/master/CHANGELOG.md).
 
 ## License
 
