@@ -268,6 +268,16 @@ const prologCheckers = {
   svg(line) {
     return this.xml(line);
   },
+
+  /**
+   * Check that given line is the `JS` line.
+   *
+   * @param {string} line The line to check.
+   * @return {boolean} `true` if given is an JS `#!`, `false` otherwise.
+   */
+  js(line) {
+    return _.startsWith(line, '#!');
+  },
 };
 
 /**
