@@ -40,7 +40,7 @@
     "vinyl-sourcemaps-apply": "0.2.1"
   },
   "devDependencies": {
-    "@babel/core": "7.12.10",
+    "@babel/core": "7.12.13",
     "@babel/preset-env": "7.12.11",
     "@babel/register": "7.12.10",
     "eslint": "7.19.0",
