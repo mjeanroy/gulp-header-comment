@@ -30,6 +30,7 @@ const Vinyl = require('vinyl');
 const Stream = require('stream');
 const moment = require('moment');
 const gulpHeaderComment = require('../src/index');
+const newBuffer = require('./utils/buffer');
 const joinLines = require('./utils/join-lines');
 const EOL = require('./utils/eol');
 
@@ -75,7 +76,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath, 'utf-8');
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
     const expectedHeader = joinLines([
@@ -171,7 +172,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath);
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
     const expectedHeader = joinLines([
@@ -214,7 +215,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath);
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const header = 'Hello World';
     const expectedHeader = joinLines([
@@ -255,7 +256,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath, 'utf-8');
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
     const expectedHeader = joinLines([
@@ -298,7 +299,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath, 'utf-8');
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
     const encoding = 'ascii';
@@ -331,7 +332,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath, 'utf-8');
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const header = `Generated on <%= moment().format('YYYY') %>`;
     const expectedHeader = joinLines([
@@ -367,7 +368,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath, 'utf-8');
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const header = `Lib: <%= pkg.name %>`;
     const expectedHeader = joinLines([
@@ -403,7 +404,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath, 'utf-8');
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const stream = gulpHeaderComment({
       file: 'fake-file-that-does-not-exist',
@@ -427,7 +428,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath);
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
 
@@ -471,7 +472,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath);
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
 
@@ -515,7 +516,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath);
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
 
@@ -558,7 +559,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath);
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
 
@@ -601,7 +602,7 @@ describe('gulp-header-comment', () => {
     const code = fs.readFileSync(filePath);
     expect(code).toBeTruthy();
 
-    const contents = new Buffer(code);
+    const contents = newBuffer(code);
     const vinyl = new Vinyl({cwd, base, contents, path: filePath});
     const headerFile = path.join(base, 'test.txt');
 
