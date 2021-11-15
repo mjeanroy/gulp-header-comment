@@ -48,7 +48,7 @@ module.exports = function gulpHeaderComment(options = {}) {
       return cb(null, file);
     }
 
-    read(options)
+    read(options, encoding)
         .then((content) => {
           const extension = getExtension(file);
           const type = extension.slice(1);
@@ -307,15 +307,16 @@ function shouldSkipFirstLine(type, line) {
  * Read file specified by given options.
  *
  * @param {Object} options Read options.
+ * @param {string} defaultEncoding The default encoding to use.
  * @return {Promise<string>} A promise resolved with file content.
  */
-function read(options) {
+function read(options, defaultEncoding) {
   if (_.isString(options)) {
     return Q.when(options);
   }
 
   const file = options.file;
-  const encoding = options.encoding || 'utf-8';
+  const encoding = options.encoding || defaultEncoding || 'utf-8';
   const deferred = Q.defer();
 
   fs.readFile(file, {encoding}, (err, data) => {
