@@ -40,7 +40,8 @@ const Q = require('q');
 
 module.exports = function gulpHeaderComment(options = {}) {
   const separator = _.isObject(options) && _.isString(options.separator) ? options.separator : '\n';
-  const pkgPath = path.join(process.cwd(), 'package.json');
+  const cwd = options.cwd || process.cwd();
+  const pkgPath = path.join(cwd, 'package.json');
   const pkg = fs.existsSync(pkgPath) ? require(pkgPath) : {};
 
   return through.obj((file, encoding, cb) => {
@@ -53,11 +54,7 @@ module.exports = function gulpHeaderComment(options = {}) {
         .then((content) => {
           const extension = getExtension(file);
           const type = extension.slice(1);
-          const header = generateHeader(content, extension, pkg, !filePath ? null : {
-            path: file.path,
-            name: path.basename(file.path),
-            dir: path.dirname(file.path),
-          });
+          const header = generateHeader(content, extension, pkg, createFileObject(cwd, filePath));
 
           if (file.isBuffer()) {
             updateFileContent(file, type, header, separator);
@@ -96,6 +93,33 @@ function updateFileContent(file, type, header, separator) {
   if (file.sourceMap && result.map) {
     applySourceMap(file, result.map);
   }
+}
+
+/**
+ * Create file descriptor object.
+ *
+ * @param {string} cwd Working directory.
+ * @param {string} filePath File absolute path.
+ * @return {Object} An object containing file information.
+ */
+function createFileObject(cwd, filePath) {
+  if (!filePath) {
+    return null;
+  }
+
+  const normalizedCwd = path.normalize(cwd);
+  const normalizedPath = path.normalize(filePath);
+
+  const filename = path.basename(normalizedPath);
+  const dirname = path.dirname(normalizedPath);
+
+  return {
+    name: filename,
+    dir: dirname,
+    path: normalizedPath,
+    relativePath: path.normalize(path.relative(normalizedCwd, normalizedPath)),
+    relativeDir: path.normalize(path.relative(normalizedCwd, dirname)),
+  };
 }
 
 /**

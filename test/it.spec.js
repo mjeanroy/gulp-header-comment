@@ -122,7 +122,9 @@ describe('[IT] gulp-header-comment', () => {
     const dest = path.join(tmpDir.name);
 
     const template = joinLines([
-      'File: <%= file.path %>',
+      'File path: <%= file.path %>',
+      'File relative path: <%= file.relativePath %>',
+      'File relative dir: <%= file.relativeDir %>',
       'File name: <%= file.name %>',
       'File dir: <%= file.dir %>',
     ]);
@@ -140,9 +142,11 @@ describe('[IT] gulp-header-comment', () => {
 
             expect(data).toEqual(joinLines([
               `/**`,
-              ` * File: ${src}`,
+              ` * File path: ${path.normalize(src)}`,
+              ` * File relative path: ${path.normalize('test/fixtures/test.js')}`,
+              ` * File relative dir: ${path.normalize('test/fixtures')}`,
               ` * File name: test.js`,
-              ` * File dir: ${path.dirname(src)}`,
+              ` * File dir: ${path.normalize(path.dirname(src))}`,
               ` */`,
               ``,
               `/* eslint-disable */`,
