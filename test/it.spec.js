@@ -115,4 +115,48 @@ describe('[IT] gulp-header-comment', () => {
           });
         });
   });
+
+  it('should prepend header with file name', (done) => {
+    const fname = 'test.js';
+    const src = path.join(__dirname, 'fixtures', fname);
+    const dest = path.join(tmpDir.name);
+
+    const template = joinLines([
+      'File: <%= file.path %>',
+      'File name: <%= file.name %>',
+      'File dir: <%= file.dir %>',
+    ]);
+
+    gulp.src(src)
+        .pipe(headerComment(template))
+        .pipe(gulp.dest(dest))
+        .on('error', (err) => done.fail(err))
+        .on('end', () => {
+          fs.readFile(path.join(dest, fname), 'utf8', (err, data) => {
+            if (err) {
+              done.fail(err);
+              return;
+            }
+
+            expect(data).toEqual(joinLines([
+              `/**`,
+              ` * File: ${src}`,
+              ` * File name: test.js`,
+              ` * File dir: ${path.dirname(src)}`,
+              ` */`,
+              ``,
+              `/* eslint-disable */`,
+              ``,
+              `'use strict';`,
+              ``,
+              `function sayHello() {`,
+              `  console.log('Hello World');`,
+              `}`,
+              ``,
+            ]));
+
+            done();
+          });
+        });
+  });
 });

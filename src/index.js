@@ -48,11 +48,16 @@ module.exports = function gulpHeaderComment(options = {}) {
       return cb(null, file);
     }
 
+    const filePath = file.path;
     read(options, encoding)
         .then((content) => {
           const extension = getExtension(file);
           const type = extension.slice(1);
-          const header = generateHeader(content, extension, pkg);
+          const header = generateHeader(content, extension, pkg, !filePath ? null : {
+            path: file.path,
+            name: path.basename(file.path),
+            dir: path.dirname(file.path),
+          });
 
           if (file.isBuffer()) {
             updateFileContent(file, type, header, separator);
@@ -167,11 +172,18 @@ function getExtension(file) {
  * @param {string} content Template of header.
  * @param {string} extension Target file extension.
  * @param {Object} pkg The `package.json` descriptor that will be injected when template will be evaluated.
+ * @param {Object} file The `file` being processed (contains `path`, `name` and `dir` entries).
  * @return {string} Interpolated header.
  */
-function generateHeader(content, extension, pkg) {
+function generateHeader(content, extension, pkg, file) {
   const templateFn = _.template(content);
-  const template = templateFn({_, moment, pkg});
+  const template = templateFn({
+    _,
+    moment,
+    pkg,
+    file,
+  });
+
   return commenting(template.trim(), {extension});
 }
 
