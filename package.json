@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.16.0",
-    "@babel/preset-env": "7.16.0",
+    "@babel/preset-env": "7.16.4",
     "@babel/register": "7.16.0",
     "eslint": "8.2.0",
     "eslint-config-google": "0.14.0",
