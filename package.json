@@ -28,7 +28,7 @@
     "url": "git://github.com/mjeanroy/gulp-header-comment.git"
   },
   "dependencies": {
-    "ansi-colors": "4.1.1",
+    "ansi-colors": "4.1.3",
     "commenting": "1.1.0",
     "fancy-log": "1.3.3",
     "lodash": "4.17.21",
