@@ -55,7 +55,7 @@
     "gulp-sourcemaps": "3.0.0",
     "jasmine": "3.6.1",
     "jasmine-core": "3.10.1",
-    "rimraf": "3.0.2",
+    "rimraf": "4.3.1",
     "tmp": "0.2.1",
     "vinyl": "3.0.0"
   }
