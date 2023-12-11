@@ -40,8 +40,8 @@
     "vinyl-sourcemaps-apply": "0.2.1"
   },
   "devDependencies": {
-    "@babel/core": "7.23.5",
-    "@babel/preset-env": "7.23.5",
+    "@babel/core": "7.23.6",
+    "@babel/preset-env": "7.23.6",
     "@babel/register": "7.22.15",
     "eslint": "8.55.0",
     "eslint-config-google": "0.14.0",
