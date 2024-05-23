@@ -47,7 +47,7 @@
     "eslint-config-google": "0.14.0",
     "gulp": "5.0.0",
     "gulp-babel": "8.0.0",
-    "gulp-conventional-changelog": "4.0.0",
+    "gulp-conventional-changelog": "5.0.0",
     "gulp-jasmine": "4.0.0",
     "gulp-sourcemaps": "3.0.0",
     "jasmine": "3.6.1",
