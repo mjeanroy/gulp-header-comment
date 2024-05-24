@@ -29,5 +29,6 @@
  * @return {Buffer} The buffer object.
  */
 module.exports = function newBuffer(content) {
+  // eslint-disable-next-line no-buffer-constructor
   return Buffer.from ? Buffer.from(content) : new Buffer(content);
 };

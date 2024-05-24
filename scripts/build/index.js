@@ -29,6 +29,6 @@ const config = require('../config');
 
 module.exports = function build() {
   return gulp.src(path.join(config.src, '**', '*.js'))
-      .pipe(babel())
-      .pipe(gulp.dest(config.dist));
+    .pipe(babel())
+    .pipe(gulp.dest(config.dist));
 };

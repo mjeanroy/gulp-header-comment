@@ -41,8 +41,12 @@ module.exports = function lint() {
     path.join(config.scripts, '**', '*.js'),
   ];
 
-  const {ESLint} = require('eslint');
+  // eslint-disable-next-line global-require
+  const { ESLint } = require('eslint');
+
+  // eslint-disable-next-line global-require
   const fancyLog = require('fancy-log');
+
   const eslint = new ESLint({
     errorOnUnmatchedPattern: false,
   });
@@ -54,7 +58,7 @@ module.exports = function lint() {
     for (let i = 0; i < results.length; ++i) {
       const lintResult = results[i];
       if (lintResult.warningCount > 0 || lintResult.errorCount > 0 || lintResult.fatalErrorCount > 0) {
-        fancyLog(formatter.format([lintResult]));
+        fancyLog(formatter.format(results));
         throw new Error('ESLintError');
       }
     }

@@ -1,13 +1,31 @@
 {
   "extends": [
     "eslint:recommended",
-    "google"
+    "airbnb-base"
   ],
   "env": {
     "node": true,
     "es6": true
   },
   "rules": {
-    "max-len": [2, 200, 2]
+    "max-len": [2, 200, 2],
+
+    "import/no-extraneous-dependencies": ["error", {
+      "devDependencies": [
+        "scripts/**/*.js",
+        "test/**/*.js",
+        "gulpfile.js"
+      ]
+    }],
+
+    "operator-linebreak": "off",
+    "quote-props": ["error", "consistent-as-needed"],
+    "no-plusplus": "off",
+    "no-use-before-define": ["error", {
+      "functions": false,
+      "classes": true,
+      "variables": true,
+      "allowNamedExports": false
+    }]
   }
 }

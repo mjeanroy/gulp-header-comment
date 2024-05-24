@@ -22,8 +22,6 @@
  * THE SOFTWARE.
  */
 
-'use strict';
-
 const path = require('path');
 const fs = require('fs');
 const gulp = require('gulp');
@@ -51,28 +49,28 @@ describe('[IT] gulp-header-comment', () => {
     const dest = path.join(tmpDir.name);
 
     gulp.src(src)
-        .pipe(headerComment('License MIT'))
-        .pipe(gulp.dest(dest))
-        .on('error', (err) => done.fail(err))
-        .on('end', () => {
-          fs.readFile(path.join(dest, fName), 'utf8', (err, data) => {
-            if (err) {
-              done.fail(err);
-              return;
-            }
+      .pipe(headerComment('License MIT'))
+      .pipe(gulp.dest(dest))
+      .on('error', (err) => done.fail(err))
+      .on('end', () => {
+        fs.readFile(path.join(dest, fName), 'utf8', (err, data) => {
+          if (err) {
+            done.fail(err);
+            return;
+          }
 
-            expect(data).toEqual(joinLines([
-              '/**',
-              ' * License MIT',
-              ' */',
-              '',
-              'Hello World',
-              '',
-            ]));
+          expect(data).toEqual(joinLines([
+            '/**',
+            ' * License MIT',
+            ' */',
+            '',
+            'Hello World',
+            '',
+          ]));
 
-            done();
-          });
+          done();
         });
+      });
   });
 
   it('should prepend header and apply sourcemap', (done) => {
@@ -81,39 +79,39 @@ describe('[IT] gulp-header-comment', () => {
     const dest = path.join(tmpDir.name);
 
     gulp.src(src)
-        .pipe(sourcemaps.init())
-        .pipe(headerComment('License MIT'))
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(dest))
-        .on('error', (err) => done.fail(err))
-        .on('end', () => {
-          fs.readFile(path.join(dest, `${fname}.map`), 'utf8', (err, data) => {
-            if (err) {
-              done.fail(err);
-              return;
-            }
+      .pipe(sourcemaps.init())
+      .pipe(headerComment('License MIT'))
+      .pipe(sourcemaps.write('.'))
+      .pipe(gulp.dest(dest))
+      .on('error', (err) => done.fail(err))
+      .on('end', () => {
+        fs.readFile(path.join(dest, `${fname}.map`), 'utf8', (err, data) => {
+          if (err) {
+            done.fail(err);
+            return;
+          }
 
-            const sourcemap = JSON.parse(data);
+          const sourcemap = JSON.parse(data);
 
-            expect(sourcemap.version).toBe(3);
-            expect(sourcemap.file).toBe(fname);
-            expect(sourcemap.sources).toEqual([fname]);
-            expect(sourcemap.mappings).toBeDefined();
-            expect(sourcemap.mappings.length).toBe(462);
-            expect(sourcemap.sourcesContent.toString()).toEqual(joinLines([
-              `/* eslint-disable */`,
-              ``,
-              `'use strict';`,
-              ``,
-              `function sayHello() {`,
-              `  console.log('Hello World');`,
-              `}`,
-              ``,
-            ]));
+          expect(sourcemap.version).toBe(3);
+          expect(sourcemap.file).toBe(fname);
+          expect(sourcemap.sources).toEqual([fname]);
+          expect(sourcemap.mappings).toBeDefined();
+          expect(sourcemap.mappings.length).toBe(462);
+          expect(sourcemap.sourcesContent.toString()).toEqual(joinLines([
+            '/* eslint-disable */',
+            '',
+            "'use strict';",
+            '',
+            'function sayHello() {',
+            "  console.log('Hello World');",
+            '}',
+            '',
+          ]));
 
-            done();
-          });
+          done();
         });
+      });
   });
 
   it('should prepend header with file name', (done) => {
@@ -130,37 +128,37 @@ describe('[IT] gulp-header-comment', () => {
     ]);
 
     gulp.src(src)
-        .pipe(headerComment(template))
-        .pipe(gulp.dest(dest))
-        .on('error', (err) => done.fail(err))
-        .on('end', () => {
-          fs.readFile(path.join(dest, fname), 'utf8', (err, data) => {
-            if (err) {
-              done.fail(err);
-              return;
-            }
+      .pipe(headerComment(template))
+      .pipe(gulp.dest(dest))
+      .on('error', (err) => done.fail(err))
+      .on('end', () => {
+        fs.readFile(path.join(dest, fname), 'utf8', (err, data) => {
+          if (err) {
+            done.fail(err);
+            return;
+          }
 
-            expect(data).toEqual(joinLines([
-              `/**`,
-              ` * File path: ${path.normalize(src)}`,
-              ` * File relative path: ${path.normalize('test/fixtures/test.js')}`,
-              ` * File relative dir: ${path.normalize('test/fixtures')}`,
-              ` * File name: test.js`,
-              ` * File dir: ${path.normalize(path.dirname(src))}`,
-              ` */`,
-              ``,
-              `/* eslint-disable */`,
-              ``,
-              `'use strict';`,
-              ``,
-              `function sayHello() {`,
-              `  console.log('Hello World');`,
-              `}`,
-              ``,
-            ]));
+          expect(data).toEqual(joinLines([
+            '/**',
+            ` * File path: ${path.normalize(src)}`,
+            ` * File relative path: ${path.normalize('test/fixtures/test.js')}`,
+            ` * File relative dir: ${path.normalize('test/fixtures')}`,
+            ' * File name: test.js',
+            ` * File dir: ${path.normalize(path.dirname(src))}`,
+            ' */',
+            '',
+            '/* eslint-disable */',
+            '',
+            "'use strict';",
+            '',
+            'function sayHello() {',
+            "  console.log('Hello World');",
+            '}',
+            '',
+          ]));
 
-            done();
-          });
+          done();
         });
+      });
   });
 });

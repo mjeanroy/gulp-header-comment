@@ -22,8 +22,6 @@
  * THE SOFTWARE.
  */
 
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
 const stringDecoder = require('string_decoder');
@@ -42,35 +40,39 @@ module.exports = function gulpHeaderComment(options = {}) {
   const separator = _.isObject(options) && _.isString(options.separator) ? options.separator : '\n';
   const cwd = options.cwd || process.cwd();
   const pkgPath = path.join(cwd, 'package.json');
+
+  // eslint-disable-next-line global-require,import/no-dynamic-require
   const pkg = fs.existsSync(pkgPath) ? require(pkgPath) : {};
 
   return through.obj((file, encoding, cb) => {
     if (file.isNull() || file.isDirectory()) {
-      return cb(null, file);
+      cb(null, file);
+      return;
     }
 
     const filePath = file.path;
+
     read(options, encoding)
-        .then((content) => {
-          const extension = getExtension(file);
-          const type = extension.slice(1);
-          const header = generateHeader(content, extension, pkg, createFileObject(cwd, filePath));
+      .then((content) => {
+        const extension = getExtension(file);
+        const type = extension.slice(1);
+        const header = generateHeader(content, extension, pkg, createFileObject(cwd, filePath));
 
-          if (file.isBuffer()) {
-            updateFileContent(file, type, header, separator);
-          } else if (file.isStream()) {
-            pipeFileContent(file, type, header, separator);
-          }
+        if (file.isBuffer()) {
+          updateFileContent(file, type, header, separator);
+        } else if (file.isStream()) {
+          pipeFileContent(file, type, header, separator);
+        }
 
-          cb(null, file);
-        })
-        .catch((err) => {
-          // Log error.
-          log.error(colors.red(`gulp-header-comment: ${err}`));
+        cb(null, file);
+      })
+      .catch((err) => {
+        // Log error.
+        log.error(colors.red(`gulp-header-comment: ${err}`));
 
-          // Wrap error.
-          cb(new PluginError('gulp-header-comment', err));
-        });
+        // Wrap error.
+        cb(new PluginError('gulp-header-comment', err));
+      });
   });
 };
 
@@ -88,6 +90,7 @@ function updateFileContent(file, type, header, separator) {
   const fname = file.relative;
   const result = transform(fname, input, type, header, separator);
 
+  // eslint-disable-next-line no-param-reassign
   file.contents = toBuffer(result.code);
 
   if (file.sourceMap && result.map) {
@@ -148,6 +151,8 @@ function pipeFileContent(file, type, header, separator) {
 function prependPipeStream(file, header, separator) {
   const stream = through();
   stream.write(toBuffer(header + separator));
+
+  // eslint-disable-next-line no-param-reassign
   file.contents = file.contents.pipe(stream);
 }
 
@@ -161,6 +166,7 @@ function prependPipeStream(file, header, separator) {
  * @return {void}
  */
 function transformFileStreamContent(file, type, header, separator) {
+  // eslint-disable-next-line no-param-reassign
   file.contents = file.contents.pipe(through(function transformFunction(chunk, enc, cb) {
     const decoder = new stringDecoder.StringDecoder();
     const rawChunk = decoder.end(chunk);
@@ -208,7 +214,7 @@ function generateHeader(content, extension, pkg, file) {
     file,
   });
 
-  return commenting(template.trim(), {extension});
+  return commenting(template.trim(), { extension });
 }
 
 /**
@@ -259,7 +265,7 @@ function transform(fname, content, type, header, separator) {
  */
 function prependHeader(magicStr, header, separator) {
   magicStr.prepend(
-      header + separator
+    header + separator,
   );
 }
 
@@ -351,13 +357,13 @@ function read(options, defaultEncoding) {
     return Q.when(options);
   }
 
-  const file = options.file;
+  const { file } = options;
   const encoding = options.encoding || defaultEncoding || 'utf-8';
   const deferred = Q.defer();
 
-  fs.readFile(file, {encoding}, (err, data) => {
-    return err ? deferred.reject(err) : deferred.resolve(data);
-  });
+  fs.readFile(file, { encoding }, (err, data) => (
+    err ? deferred.reject(err) : deferred.resolve(data)
+  ));
 
   return deferred.promise;
 }
@@ -369,5 +375,6 @@ function read(options, defaultEncoding) {
  * @return {Buffer} Node Buffer.
  */
 function toBuffer(rawString) {
+  // eslint-disable-next-line no-buffer-constructor
   return Buffer.from ? Buffer.from(rawString) : new Buffer(rawString);
 }

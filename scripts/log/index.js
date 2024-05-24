@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-'use strict';
-
 const log = require('fancy-log');
 const colors = require('ansi-colors');
 

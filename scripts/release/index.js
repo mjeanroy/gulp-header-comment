@@ -64,7 +64,7 @@ function bumpVersion(type) {
  */
 function prepareNextRelease() {
   return run(`git rm -r "${config.dist}"`).then(() => (
-    run(`git commit -m 'release: prepare next release'`)
+    run("git commit -m 'release: prepare next release'")
   ));
 }
 
@@ -86,8 +86,8 @@ function createReleaseTask(level) {
   }
 
   return gulp.series(
-      doRelease,
-      prepareNextRelease
+    doRelease,
+    prepareNextRelease,
   );
 }
 
@@ -96,4 +96,3 @@ module.exports = {
   minor: createReleaseTask('minor'),
   major: createReleaseTask('major'),
 };
-
