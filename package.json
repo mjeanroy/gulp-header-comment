@@ -40,8 +40,8 @@
     "vinyl-sourcemaps-apply": "0.2.1"
   },
   "devDependencies": {
-    "@babel/core": "7.27.4",
-    "@babel/preset-env": "7.27.2",
+    "@babel/core": "7.28.0",
+    "@babel/preset-env": "7.28.0",
     "@babel/register": "7.27.1",
     "eslint": "8.57.0",
     "eslint-config-airbnb-base": "15.0.0",
