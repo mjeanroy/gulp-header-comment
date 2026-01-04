@@ -29,9 +29,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # macos-latest runs on arm64 and do not support node < 18
-        os: [ windows-latest, ubuntu-latest, macos-13 ]
-        node: [ 14, 16, 18, 19, 20, 21 ]
+        # macos-latest runs on arm64 and do not support node < 16
+        os: [ windows-latest, ubuntu-latest, macos-latest ]
+        node: [ 16, 18, 19, 20, 21 ]
     steps:
       - uses: actions/checkout@v4.1.2
       - uses: actions/setup-node@v4.0.2
