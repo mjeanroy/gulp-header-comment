@@ -31,7 +31,7 @@ jobs:
       matrix:
         # macos-latest runs on arm64 and do not support node < 16
         os: [ windows-latest, ubuntu-latest, macos-latest ]
-        node: [ 16, 18, 19, 20, 21, 22 ]
+        node: [ 16, 18, 19, 20, 21, 22, 23 ]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         name: Checkout
