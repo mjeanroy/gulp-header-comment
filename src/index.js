@@ -34,7 +34,6 @@ const commenting = require('commenting');
 const through = require('through2');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 const MagicString = require('magic-string');
-const Q = require('q');
 
 module.exports = function gulpHeaderComment(options = {}) {
   const separator = _.isObject(options) && _.isString(options.separator) ? options.separator : '\n';
@@ -353,19 +352,23 @@ function shouldSkipFirstLine(type, line) {
  * @return {Promise<string>} A promise resolved with file content.
  */
 function read(options, defaultEncoding) {
-  if (_.isString(options)) {
-    return Q.when(options);
-  }
+  return new Promise((resolve, reject) => {
+    if (_.isString(options)) {
+      resolve(options);
+      return;
+    }
 
-  const { file } = options;
-  const encoding = options.encoding || defaultEncoding || 'utf-8';
-  const deferred = Q.defer();
+    const { file } = options;
+    const encoding = options.encoding || defaultEncoding || 'utf-8';
 
-  fs.readFile(file, { encoding }, (err, data) => (
-    err ? deferred.reject(err) : deferred.resolve(data)
-  ));
-
-  return deferred.promise;
+    fs.readFile(file, { encoding }, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
 }
 
 /**
