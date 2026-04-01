@@ -29,9 +29,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # macos-latest runs on arm64 and do not support node < 16
         os: [ windows-latest, ubuntu-latest, macos-latest ]
-        node: [ 16, 18, 19, 20, 21, 22, 23, 24, 25 ]
+        node: [ 18, 19, 20, 21, 22, 23, 24, 25 ]
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         name: Checkout
@@ -39,7 +38,11 @@ jobs:
         name: Set up NodeJS
         with:
           node-version: ${{ matrix.node }}
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+        name: Set up PNPM
+        with:
+          version: 10.33.0
       - name: Install
-        run: npm install
+        run: pnpm install
       - name: Test
-        run: npm test
+        run: pnpm test
