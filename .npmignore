@@ -41,6 +41,8 @@
 /.vscode
 /gulpfile.js
 /*.iml
+/pnpm-workspace.yaml
+/pnpm-lock.yaml
 
 # Logs
 *.log
