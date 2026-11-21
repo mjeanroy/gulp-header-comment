@@ -27,3 +27,13 @@ blockExoticSubdeps: true
 trustPolicy: no-downgrade
 trustPolicyExclude:
   - 'semver@6.3.1 || 5.7.2'
+
+# Since pnpm 11, these settings are no longer read from .npmrc (auth/registry only).
+lockfile: false
+saveExact: true
+
+# Dependencies allowed (true) or denied (false) to run install scripts.
+# Since pnpm 11, an unlisted dependency with a build script fails the install.
+allowBuilds:
+  # Its postinstall script only prints a message, nothing needs to be built.
+  es5-ext: false

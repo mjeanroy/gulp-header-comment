@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Package manager is pnpm (CI uses pnpm 10; `pnpm-workspace.yaml` sets supply-chain policies like `minimumReleaseAge`). All npm scripts delegate to Gulp tasks defined in `gulpfile.js`, with implementations in `scripts/<task>/index.js`.
+Package manager is pnpm 11 (CI pins 11.28.12 through `pnpm/setup`; pnpm 11 itself needs Node ≥ 22.13, but CI installs its standalone binary, so the Node 18–21 runners still work). pnpm settings live in `pnpm-workspace.yaml` (supply-chain policies like `minimumReleaseAge`, plus `lockfile: false` and `saveExact: true`): pnpm 11 only reads auth/registry settings from `.npmrc`, which is kept for npm (`npm version` in the release tasks). pnpm 11 fails the install when a dependency has a build script that `allowBuilds` in `pnpm-workspace.yaml` doesn't list, so list any new one there (`true` to run it, `false` to skip it). All npm scripts delegate to Gulp tasks defined in `gulpfile.js`, with implementations in `scripts/<task>/index.js`.
 
 - `pnpm test`: clean → lint → build → run all `test/**/*.spec.js` with Jasmine. Lint runs first, so any ESLint warning fails the test run.
 - `pnpm run lint`: ESLint (airbnb-base) over root `*.js`, `src`, `test`, `scripts`. Warnings are treated as errors. Pass `--file <path>` (repeatable; file, directory or glob) to lint only those paths, e.g. `pnpm run lint --file src/index.js --file test/index.spec.js`. A `--file` that matches nothing is an error. Chained tasks (`build`, `test`, `release:*`) always lint the whole project and ignore `--file`.
@@ -46,7 +46,7 @@ Errors are logged with `fancy-log` and passed to the callback as a `PluginError`
   - `magic-string`: its next major is ESM-only (effectively Node ≥ 22). It stays on 0.30.x while gulp still supports Node 10.
   - `eslint`: v9 needs the flat config, and the repo still uses the legacy `.eslintrc`. Don't migrate the config or bump these as a side task.
 - `.eslintrc`: `import/no-extraneous-dependencies` allows devDependencies only in `scripts/`, `test/` and `gulpfile.js`. Anything `src/` imports must be in `dependencies`. `max-len` is 200.
-- Dependencies are pinned to exact versions (`.npmrc`: `save-exact=true`). No lockfile is committed (`package-lock=false`). New releases must be a couple of days old before install (`.npmrc` `min-release-age`, `pnpm-workspace.yaml` `minimumReleaseAge`).
+- Dependencies are pinned to exact versions (`saveExact: true` in `pnpm-workspace.yaml`, `save-exact=true` in `.npmrc`). No lockfile is committed (`lockfile: false` / `package-lock=false`). New releases must be a couple of days old before install (`.npmrc` `min-release-age`, `pnpm-workspace.yaml` `minimumReleaseAge`).
 - Local Node version is in `.nvmrc` (20.x). Scripts use `node:`-prefixed imports and `util.parseArgs`, so the tooling needs Node ≥ 18.3, while `dist/` doesn't.
 
 ## Conventions
