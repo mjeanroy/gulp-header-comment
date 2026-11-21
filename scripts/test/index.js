@@ -23,19 +23,89 @@
  */
 
 const path = require('node:path');
+const { parseArgs } = require('node:util');
 const gulp = require('gulp');
-const jasmine = require('gulp-jasmine');
+const Jasmine = require('jasmine');
 const build = require('../build');
 const config = require('../config');
 
 /**
- * Run unit test suite and exit.
+ * Read optional `--file <path>` (repeatable) and `--filter <regex>` flags from the command line,
+ * so a subset of the test suite can be run, e.g:
  *
- * @return {Stream} Gulp stream.
+ *   pnpm run test:unit --file test/index.spec.js --filter "should prepend header"
+ *
+ * @return {{files: Array<string>, filter: (string|undefined)}} Selected spec files and spec name filter.
+ */
+function readCliOptions() {
+  const { values } = parseArgs({
+    args: process.argv.slice(2),
+    strict: false,
+    options: {
+      file: { type: 'string', multiple: true },
+      filter: { type: 'string' },
+    },
+  });
+
+  // Paths may be absolute or relative to the project root; Jasmine expects them relative to the
+  // project root, using forward slashes.
+  const files = (values.file || []).map((file) => (
+    path.relative(config.root, path.resolve(config.root, file)).split(path.sep).join('/')
+  ));
+
+  return {
+    files,
+    filter: values.filter,
+  };
+}
+
+/**
+ * Remove project modules (i.e not in `node_modules`) from the require cache, so that
+ * successive runs (in `tdd` mode) load fresh sources and specs.
+ *
+ * @return {void}
+ */
+function deleteRequireCache() {
+  Object.keys(require.cache).forEach((id) => {
+    if (id.startsWith(config.root) && !id.includes('node_modules')) {
+      delete require.cache[id];
+    }
+  });
+}
+
+/**
+ * Run unit test suite (or the subset selected with `--file` / `--filter`).
+ *
+ * @return {Promise<void>} A promise resolved when the test suite succeeds, rejected otherwise.
  */
 function test() {
-  const specs = path.join(config.test, '**', '*.spec.js');
-  return gulp.src(specs).pipe(jasmine());
+  const { files, filter } = readCliOptions();
+
+  deleteRequireCache();
+
+  const runner = new Jasmine({
+    projectBaseDir: config.root,
+  });
+
+  runner.loadConfig({
+    spec_dir: path.relative(config.root, config.test),
+    spec_files: [
+      '**/*.spec.js',
+    ],
+  });
+
+  return new Promise((resolve, reject) => {
+    // Replace the default completion handler, which would exit the process.
+    runner.onComplete((passed) => {
+      if (passed) {
+        resolve();
+      } else {
+        reject(new Error('JasmineError'));
+      }
+    });
+
+    runner.execute(files, filter);
+  });
 }
 
 /**
