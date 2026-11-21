@@ -9,11 +9,15 @@ gulp-header-comment is a [Gulp](https://github.com/gulpjs/gulp) extension to add
 ## Usage
 
 ```javascript
+// gulpfile.js
+const gulp = require('gulp');
 const headerComment = require('gulp-header-comment');
 
-gulp.src('**/*.js')
-  .pipe(headerComment('License MIT'))
-  .pipe(gulp.dest('./dist/'))
+exports.default = function addHeader() {
+  return gulp.src('src/**/*.js')
+    .pipe(headerComment('License MIT'))
+    .pipe(gulp.dest('./dist/'));
+};
 ```
 
 The generated comment will use:
@@ -22,35 +26,44 @@ The generated comment will use:
 - Hash comments for `appcache` and hidden files (i.e starts with `#`).
 - The default is the block comment otherwise.
 
-See [https://github.com/3rd-Eden/commenting](commenting), as this package is used to generate comments according to file extensions.
+See [commenting](https://github.com/3rd-Eden/commenting), as this package is used to generate comments according to file extensions.
 
 ## Templating
 
 Header strings can use `lodash`, `moment` and data from `package.json`:
 
 ```javascript
+// gulpfile.js
+const gulp = require('gulp');
 const headerComment = require('gulp-header-comment');
 
-gulp.src('**/*.js')
-  .pipe(headerComment(`
-    License: <%= pkg.license %>
-    Generated on <%= moment().format('YYYY') %>
-    Author: <%= _.capitalize(pkg.author) %>
-  `))
-  .pipe(gulp.dest('./dist/'))
+exports.default = function addHeader() {
+  return gulp.src('src/**/*.js')
+    .pipe(headerComment(`
+      License: <%= pkg.license %>
+      Generated on <%= moment().format('YYYY') %>
+      Author: <%= _.capitalize(pkg.author) %>
+    `))
+    .pipe(gulp.dest('./dist/'));
+};
 ```
 
 You can also point to a file on disk:
 
 ```javascript
+// gulpfile.js
+const path = require('path');
+const gulp = require('gulp');
 const headerComment = require('gulp-header-comment');
 
-gulp.src('**/*.js')
-  .pipe(headerComment({
-    file: path.join(__dirname, 'header.txt'),
-    encoding: 'utf-8', // Default is UTF-8
-  }))
-  .pipe(gulp.dest('./dist/'))
+exports.default = function addHeader() {
+  return gulp.src('src/**/*.js')
+    .pipe(headerComment({
+      file: path.join(__dirname, 'header.txt'),
+      encoding: 'utf-8', // Default is UTF-8
+    }))
+    .pipe(gulp.dest('./dist/'));
+};
 ```
 
 ## ChangeLogs
